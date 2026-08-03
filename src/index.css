@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #34d399;
+  --brand-deep: #10b981;
+  --ink: #0f172a;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background-color: #eef2f6;
+  color: var(--ink);
+}
+
+.font-display {
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+/* Warm "living room" background scene */
+.scene {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  background:
+    radial-gradient(120% 60% at 50% -10%, #fdf3e7 0%, transparent 55%),
+    radial-gradient(90% 50% at 90% 90%, #b7e7d3 0%, transparent 50%),
+    radial-gradient(80% 50% at 0% 80%, #f4d9c6 0%, transparent 55%),
+    linear-gradient(160deg, #eef6f1 0%, #e7eef2 55%, #eef2f6 100%);
+}
+
+.scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.55), transparent 40%),
+    radial-gradient(circle at 75% 70%, rgba(16, 185, 129, 0.12), transparent 45%);
+  backdrop-filter: none;
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 18px 40px -18px rgba(15, 23, 42, 0.28);
+  }
+  .glass-deep {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 14px 34px -18px rgba(15, 23, 42, 0.22);
+  }
+  .header-gradient {
+    background: linear-gradient(135deg, #0f766e 0%, #065f46 45%, #134e4a 100%);
+  }
+  .text-gradient {
+    background: linear-gradient(135deg, #0f766e, #34d399);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* slim scrollbars for the app frame */
+.nice-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.nice-scroll::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.18);
+  border-radius: 8px;
+}
+.nice-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
