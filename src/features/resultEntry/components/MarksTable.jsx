@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import CustomKeypad from '../../../shared/components/CustomKeypad';
+import useIsTouchDevice from '../../../shared/hooks/useIsTouchDevice';
 
 export default function EditableMarksTable({ students, onChange }) {
+  const isTouch = useIsTouchDevice();
   const [activeIndex, setActiveIndex] = useState(null);
   const [editingValue, setEditingValue] = useState('');
 
@@ -31,13 +33,16 @@ export default function EditableMarksTable({ students, onChange }) {
     void student;
   };
 
+  const getMax = () => (selected ? selected[isTheory ? 'theory' : 'paper'].max : null);
+
   const handleInput = (key) => {
     if (activeIndex === null) return;
-    const next = editingValue + key;
+    const max = getMax();
+    const next = key === '0' && editingValue === '' ? '0' : editingValue + key;
+    if (max != null && Number(next) > max) return;
     setEditingValue(next);
-    const value = Number(next);
     const field = isTheory ? 'theory' : 'paper';
-    onChange(selected.admissionNo, field, value);
+    onChange(selected.admissionNo, field, Number(next || 0));
   };
 
   const handleBackspace = () => {
@@ -67,18 +72,37 @@ export default function EditableMarksTable({ students, onChange }) {
 
   const renderCell = (student, field, index) => {
     const isActive = activeIndex === index;
+
+    if (isTouch) {
+      return (
+        <input
+          ref={(el) => { inputRefs[index] = el; }}
+          type="number"
+          inputMode="none"
+          readOnly
+          min="0"
+          max={student[field].max}
+          value={isActive ? editingValue || '0' : Math.min(student[field].obtained, student[field].max)}
+          onFocus={() => handleSelect(index)}
+          onClick={() => handleSelect(index)}
+          className={`${inputCls} ${isActive ? 'ring-2 ring-cyan-500 border-cyan-400' : ''}`}
+          placeholder="0"
+        />
+      );
+    }
+
     return (
       <input
-        ref={(el) => { inputRefs[index] = el; }}
         type="number"
-        inputMode="none"
-        readOnly
+        inputMode="numeric"
         min="0"
         max={student[field].max}
-        value={isActive ? editingValue || '0' : student[field].obtained}
-        onFocus={() => handleSelect(index)}
-        onClick={() => handleSelect(index)}
-        className={`${inputCls} ${isActive ? 'ring-2 ring-cyan-500 border-cyan-400' : ''}`}
+        value={Math.min(student[field].obtained, student[field].max)}
+        onChange={(e) => {
+          const value = Math.min(Number(e.target.value || 0), student[field].max);
+          onChange(student.admissionNo, field, value);
+        }}
+        className={inputCls}
         placeholder="0"
       />
     );
@@ -138,9 +162,11 @@ export default function EditableMarksTable({ students, onChange }) {
         </table>
       </div>
 
-      {activeIndex !== null && (
+      {isTouch && activeIndex !== null && (
         <CustomKeypad
           display={editingValue}
+          max={selected ? selected[isTheory ? 'theory' : 'paper'].max : null}
+          cellLabel={selected ? `${selected.name} · ${isTheory ? 'Theory' : 'Paper'}` : ''}
           onInput={handleInput}
           onBackspace={handleBackspace}
           onMove={handleMove}

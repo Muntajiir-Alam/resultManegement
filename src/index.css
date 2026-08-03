@@ -89,3 +89,16 @@ body {
 .nice-scroll::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* slide-up animation for the custom keypad */
+@keyframes keypadSlideUp {
+  from {
+    transform: translate(-50%, 110%);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+.keypad-slide-up {
+  animation: keypadSlideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
