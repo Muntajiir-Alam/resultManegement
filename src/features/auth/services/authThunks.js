@@ -7,12 +7,12 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
     return response.data;
   } catch (error) {
     if (!error.response) {
+      const isAdmin = credentials.role === 'admin';
       return {
         user: {
-          id: '1',
-          name: 'Admin User',
-          email: credentials.email,
-          role: credentials.email.includes('admin') ? 'admin' : 'student'
+          id: isAdmin ? '1' : '2',
+          name: isAdmin ? credentials.email : credentials.name,
+          role: credentials.role
         },
         token: 'demo-token'
       };

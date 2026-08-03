@@ -52,7 +52,7 @@ export default function AdminLayout() {
   const initial = (name || 'A').trim().charAt(0).toUpperCase();
 
   return (
-    <div className="scene">
+    <div className="">
       <div className="relative flex min-h-screen flex-col">
         {/* Top header */}
         <header className="glass-deep sticky top-0 z-20 px-4 py-3 sm:px-6">
