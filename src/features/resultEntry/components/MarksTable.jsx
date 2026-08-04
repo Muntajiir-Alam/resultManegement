@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import CustomKeypad from '../../../shared/components/CustomKeypad';
 import useIsTouchDevice from '../../../shared/hooks/useIsTouchDevice';
 
@@ -6,6 +6,7 @@ export default function EditableMarksTable({ students, onChange }) {
   const isTouch = useIsTouchDevice();
   const [activeIndex, setActiveIndex] = useState(null);
   const [editingValue, setEditingValue] = useState('');
+  const inputRefs = useRef({});
 
   const cells = 2; // theory + paper per student
   const total = students.length * cells;
@@ -13,24 +14,20 @@ export default function EditableMarksTable({ students, onChange }) {
   const selected = activeIndex !== null ? students[Math.floor(activeIndex / cells)] : null;
   const isTheory = activeIndex !== null && activeIndex % cells === 0;
 
-  const inputRefs = Array.from({ length: total }, () => ({ current: null }));
-
-  const handleTheory = (admissionNo, value) => onChange(admissionNo, 'theory', value);
-  const handlePaper = (admissionNo, value) => onChange(admissionNo, 'paper', value);
-
   const focusCell = (index) => {
     if (index < 0 || index >= total) return;
     setActiveIndex(index);
     setEditingValue('');
-    inputRefs[index]?.current?.focus();
+    const el = inputRefs.current[index];
+    if (el) {
+      el.focus();
+      el.select();
+    }
   };
 
   const handleSelect = (index) => {
-    const student = students[Math.floor(index / cells)];
     setActiveIndex(index);
     setEditingValue('');
-    setTimeout(() => inputRefs[index]?.current?.focus(), 0);
-    void student;
   };
 
   const getMax = () => (selected ? selected[isTheory ? 'theory' : 'paper'].max : null);
@@ -61,6 +58,31 @@ export default function EditableMarksTable({ students, onChange }) {
     else if (dir === 'right') focusCell(activeIndex + 1);
   };
 
+  // On-screen arrow pad for desktop — mouse-based cell switching.
+  const handlePadMove = (dir) => {
+    if (activeIndex === null) {
+      focusCell(0); // start from the first cell
+      return;
+    }
+    handleMove(dir);
+  };
+
+  // Desktop keyboard navigation between cells (Excel-style).
+  const handleKeyDown = (e, index) => {
+    const { key, shiftKey } = e;
+    let next = null;
+
+    if (key === 'ArrowLeft') next = index - 1;
+    else if (key === 'ArrowRight') next = index + 1;
+    else if (key === 'ArrowUp') next = index - cells;
+    else if (key === 'ArrowDown') next = index + cells;
+    else if (key === 'Enter') next = shiftKey ? index - cells : index + cells;
+    else return; // let Tab and normal typing behave natively
+
+    e.preventDefault(); // stop number inputs from incrementing on ArrowUp/Down
+    focusCell(next);
+  };
+
   const thCls =
     'border-b border-slate-200 bg-slate-100/70 px-3 py-2.5 text-center text-[11px] font-bold uppercase tracking-wide text-slate-600';
   const tdNumCls = 'whitespace-nowrap border-b border-slate-100 bg-white/40 px-3 py-2 text-center text-sm text-slate-700';
@@ -68,15 +90,19 @@ export default function EditableMarksTable({ students, onChange }) {
     'whitespace-nowrap border-b border-slate-100 bg-white/40 px-3 py-2 text-left text-sm text-slate-700';
   const inputCls =
     'w-full rounded-xl border border-emerald-200 bg-white px-2 py-1.5 text-center text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500';
+  const activeInputCls = 'focus:ring-cyan-500 ring-2 ring-cyan-500 border-cyan-400';
   const maxBadge = 'inline-flex min-w-[44px] justify-center rounded-lg bg-slate-700 px-2 py-1 text-xs font-semibold text-white';
 
   const renderCell = (student, field, index) => {
     const isActive = activeIndex === index;
+    const ref = (el) => {
+      inputRefs.current[index] = el;
+    };
 
     if (isTouch) {
       return (
         <input
-          ref={(el) => { inputRefs[index] = el; }}
+          ref={ref}
           type="number"
           inputMode="none"
           readOnly
@@ -85,7 +111,7 @@ export default function EditableMarksTable({ students, onChange }) {
           value={isActive ? editingValue || '0' : Math.min(student[field].obtained, student[field].max)}
           onFocus={() => handleSelect(index)}
           onClick={() => handleSelect(index)}
-          className={`${inputCls} ${isActive ? 'ring-2 ring-cyan-500 border-cyan-400' : ''}`}
+          className={`${inputCls} ${isActive ? activeInputCls : ''}`}
           placeholder="0"
         />
       );
@@ -93,16 +119,19 @@ export default function EditableMarksTable({ students, onChange }) {
 
     return (
       <input
+        ref={ref}
         type="number"
         inputMode="numeric"
         min="0"
         max={student[field].max}
         value={Math.min(student[field].obtained, student[field].max)}
+        onFocus={() => handleSelect(index)}
         onChange={(e) => {
           const value = Math.min(Number(e.target.value || 0), student[field].max);
           onChange(student.admissionNo, field, value);
         }}
-        className={inputCls}
+        onKeyDown={(e) => handleKeyDown(e, index)}
+        className={`${inputCls} ${isActive ? activeInputCls : ''}`}
         placeholder="0"
       />
     );
@@ -172,6 +201,23 @@ export default function EditableMarksTable({ students, onChange }) {
           onMove={handleMove}
           onHide={() => { setActiveIndex(null); setEditingValue(''); }}
         />
+      )}
+
+      {!isTouch && (
+        <div className="mt-4">
+          <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-xs text-slate-500">
+            <span className='flex items-center gap-1'>
+              <kbd className="rounded-md border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-600">←</kbd>{' '}
+              <kbd className="rounded-md border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-600">→</kbd>{' '}
+              <kbd className="rounded-md border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-600">↑</kbd>{' '}
+              <kbd className="rounded-md border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-600">↓</kbd>{' '}
+              Switch cell with arrow key
+            </span>
+            <span>
+              <kbd className="rounded-md border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-600">Enter</kbd> next row
+            </span>
+          </p>
+        </div>
       )}
     </div>
   );

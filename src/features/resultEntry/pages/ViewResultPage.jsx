@@ -112,42 +112,111 @@ export default function ViewResultPage() {
       {error && <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-600">{error}</p>}
 
       {result && (
-        <div className="glass rounded-3xl p-5">
-          <div className="mb-4 px-1">
-            <h3 className="font-display text-lg font-bold text-slate-800">{result.student?.name}</h3>
-            <p className="text-xs text-slate-500">
-              {result.exam} • Class {result.class} • Sec {result.section} • {result.admissionNo}
+        <div className="glass rounded-3xl p-6">
+          {/* Header */}
+          <div className="text-center border-b pb-4 mb-6">
+            <h2 className="text-2xl font-bold tracking-wide">
+              ACADEMIC ACHIEVEMENT
+            </h2>
+
+            <h3 className="mt-2 text-lg font-semibold">
+              {result.student?.name}
+            </h3>
+
+            <p className="text-sm text-gray-600">
+              {result.exam} | Class {result.class} | Section {result.section} |
+              Admission No. {result.admissionNo}
             </p>
           </div>
 
-          <div className="nice-scroll overflow-x-auto rounded-2xl bg-white/40">
-            <table className="w-full min-w-[420px] border-collapse text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse border border-gray-700 text-center text-sm">
               <thead>
-                <tr>
-                  <th className={thCls}>Subject</th>
-                  <th className={thCls}>Theory</th>
-                  <th className={thCls}>Paper</th>
-                  <th className={thCls}>Total</th>
+                <tr className="bg-gray-100">
+                  <th rowSpan={2} className="border p-2">
+                    Subject
+                  </th>
+                  <th colSpan={2} className="border p-2">
+                    Theory
+                  </th>
+                  <th colSpan={2} className="border p-2">
+                    Paper
+                  </th>
+                  <th rowSpan={2} className="border p-2">
+                    Total
+                  </th>
+                </tr>
+
+                <tr className="bg-gray-50">
+                  <th className="border p-2">Obt.</th>
+                  <th className="border p-2">Max</th>
+
+                  <th className="border p-2">Obt.</th>
+                  <th className="border p-2">Max</th>
                 </tr>
               </thead>
+
               <tbody>
                 {result.subjects.map((sub) => {
-                  const total = (sub.theory?.obtained || 0) + (sub.paper?.obtained || 0);
+                  const total =
+                    (sub.theory?.obtained || 0) +
+                    (sub.paper?.obtained || 0);
+
+                  const max =
+                    (sub.theory?.max || 0) +
+                    (sub.paper?.max || 0);
+
                   return (
                     <tr key={sub.subject}>
-                      <td className={tdCls}>{sub.subject}</td>
-                      <td className={tdCls}>
-                        {sub.theory?.obtained} / {sub.theory?.max}
+                      <td className="border p-2 text-left font-medium">
+                        {sub.subject}
                       </td>
-                      <td className={tdCls}>
-                        {sub.paper?.obtained} / {sub.paper?.max}
+
+                      <td className="border p-2">
+                        {sub.theory?.obtained}
                       </td>
-                      <td className={`${tdCls} font-bold text-emerald-700`}>{total}</td>
+
+                      <td className="border p-2">
+                        {sub.theory?.max}
+                      </td>
+
+                      <td className="border p-2">
+                        {sub.paper?.obtained}
+                      </td>
+
+                      <td className="border p-2">
+                        {sub.paper?.max}
+                      </td>
+
+                      <td className="border p-2 font-bold text-blue-700">
+                        {total} / {max}
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Footer */}
+          <div className="mt-8 grid grid-cols-3 text-center text-sm">
+            <div>
+              <div className="border-t border-black pt-2 inline-block w-32">
+                Class Teacher
+              </div>
+            </div>
+
+            <div>
+              <div className="border-t border-black pt-2 inline-block w-32">
+                Parent
+              </div>
+            </div>
+
+            <div>
+              <div className="border-t border-black pt-2 inline-block w-32">
+                Principal
+              </div>
+            </div>
           </div>
         </div>
       )}
