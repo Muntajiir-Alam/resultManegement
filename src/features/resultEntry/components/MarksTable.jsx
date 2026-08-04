@@ -204,7 +204,7 @@ export default function EditableMarksTable({ students, onChange }) {
       )}
 
       {!isTouch && (
-        <div className="mt-4">
+        <div className="mt-4"> 
           <p className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-xs text-slate-500">
             <span className='flex items-center gap-1'>
               <kbd className="rounded-md border border-slate-300 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-600">←</kbd>{' '}
