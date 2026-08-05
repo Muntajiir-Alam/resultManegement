@@ -59,19 +59,18 @@ export default function AppSidebar({ title, subtitle, role, items, name, onLogou
   return (
     <div className="sidebar-shell flex h-full w-64 flex-col">
       <div className="relative overflow-hidden px-5 pb-5 pt-6">
-        <div className="pointer-events-none absolute -right-12 -top-14 h-40 w-40 rounded-full bg-emerald-300/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -left-8 h-32 w-32 rounded-full bg-amber-300/10 blur-3xl" />
+        <div className="pointer-events-none absolute -right-12 -top-14 h-40 w-40 rounded-full bg-emerald-300/25 blur-3xl" />
 
         <div className="relative flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-amber-300" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-100 ring-1 ring-emerald-200">
+            <svg viewBox="0 0 24 24" className="h-5 w-5 text-emerald-700" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2 4 6v6c0 4.6 3.4 8.8 8 10 4.6-1.2 8-5.4 8-10V6l-8-4Z" />
               <path d="m8.5 12 2.3 2.3L15.5 9.5" />
             </svg>
           </div>
           <div className="min-w-0">
-            <p className="truncate font-display text-sm font-bold tracking-tight text-white">{title}</p>
-            <p className="truncate text-[11px] font-medium text-emerald-100/60">{subtitle}</p>
+            <p className="truncate font-display text-sm font-bold tracking-tight text-slate-800">{title}</p>
+            <p className="truncate text-[11px] font-medium text-slate-500">{subtitle}</p>
           </div>
         </div>
 
@@ -79,14 +78,14 @@ export default function AppSidebar({ title, subtitle, role, items, name, onLogou
           <button
             onClick={onClose}
             aria-label="Close menu"
-            className="absolute right-3 top-3 rounded-xl p-1.5 text-emerald-100/60 transition hover:bg-white/10 hover:text-white"
+            className="absolute right-3 top-3 rounded-xl p-1.5 text-slate-400 transition hover:bg-slate-200/70 hover:text-slate-600"
           >
             <IconClose />
           </button>
         )}
       </div>
 
-      <div className="px-5 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-emerald-100/35">
+      <div className="px-5 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
         Menu
       </div>
 
@@ -99,8 +98,8 @@ export default function AppSidebar({ title, subtitle, role, items, name, onLogou
             className={({ isActive }) =>
               `${itemBase} ${
                 isActive
-                  ? 'bg-white text-emerald-950 shadow-lg shadow-black/20'
-                  : 'text-emerald-50/70 hover:bg-white/10 hover:text-white'
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30'
+                  : 'text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-700'
               }`
             }
           >
@@ -108,13 +107,13 @@ export default function AppSidebar({ title, subtitle, role, items, name, onLogou
               <>
                 <span
                   className={`flex h-5 w-5 items-center justify-center transition-colors ${
-                    isActive ? 'text-emerald-700' : 'text-emerald-200/70 group-hover:text-white'
+                    isActive ? 'text-white' : 'text-slate-400 group-hover:text-emerald-700'
                   }`}
                 >
                   {iconMap[item.label] || null}
                 </span>
                 <span className="flex-1">{item.label}</span>
-                {isActive && <span className="h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]" />}
+                {isActive && <span className="h-1.5 w-1.5 rounded-full bg-emerald-200" />}
               </>
             )}
           </NavLink>
@@ -122,19 +121,19 @@ export default function AppSidebar({ title, subtitle, role, items, name, onLogou
       </nav>
 
       <div className="space-y-2 px-3 pb-5">
-        <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 ring-1 ring-white/10">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-300 to-amber-400 font-display text-xs font-bold text-emerald-950">
+        <div className="flex items-center gap-3 rounded-2xl bg-white/70 p-3 ring-1 ring-emerald-100">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-teal-700 font-display text-xs font-bold text-white">
             {initial}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-white">{name || 'User'}</p>
-            <p className="truncate text-[11px] text-emerald-100/60">{role}</p>
+            <p className="truncate text-sm font-semibold text-slate-800">{name || 'User'}</p>
+            <p className="truncate text-[11px] text-slate-500">{role}</p>
           </div>
         </div>
 
         <button
           onClick={onLogout}
-          className="flex w-full items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-semibold text-rose-300 transition hover:bg-rose-500/15 hover:text-rose-200"
+          className="flex w-full items-center gap-3 rounded-2xl px-4 py-2.5 text-sm font-semibold text-rose-500 transition hover:bg-rose-500/10 hover:text-rose-600"
         >
           <span className="flex h-5 w-5 items-center justify-center">
             <IconLogout />
