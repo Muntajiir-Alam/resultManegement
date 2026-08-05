@@ -18,10 +18,10 @@ function HomeIndex() {
 
 function StudentLayout() {
   return (
-    <div className="relative min-h-screen pb-24">
+    <div className="relative min-h-screen">
       <div className="scene" />
       <StudentNav />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-10">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-10 sm:px-6 md:pl-64">
         <Routes>
           <Route index element={<ViewResult />} />
           <Route path="merit" element={<MeritList />} />

@@ -5,7 +5,7 @@ import { fetchStudents, submitMarks } from '../services/entryApi';
 
 function SearchIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg viewBox="0 0 24 24" className="h-5 w-5 text-orange-400" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" strokeLinecap="round" />
     </svg>
@@ -81,21 +81,24 @@ export default function ResultEntryPage() {
   return (
     <div className="space-y-5">
       {/* Hero banner */}
-      <section className="header-gradient relative overflow-hidden rounded-3xl p-6 text-white shadow-lg shadow-emerald-900/20 sm:flex sm:items-center sm:justify-between sm:p-8">
-        <div className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
-        <div className="pointer-events-none absolute right-4 bottom-2 text-7xl opacity-20">❄️</div>
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-950 via-orange-800 to-orange-600 p-6 text-white shadow-lg shadow-orange-900/25 sm:flex sm:items-center sm:justify-between sm:p-8">
+        <div className="pointer-events-none absolute -right-6 -top-8 h-44 w-44 rounded-full bg-amber-300/20 blur-2xl"></div>
+        <div className="pointer-events-none absolute -bottom-12 left-1/3 h-32 w-32 rounded-full bg-rose-400/15 blur-2xl"></div>
+        <div className="pointer-events-none absolute right-5 bottom-3 flex h-16 w-16 items-center justify-center rounded-3xl bg-white/10 font-display text-3xl font-black text-amber-300 ring-1 ring-white/25 backdrop-blur">
+          A+
+        </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Result Entry</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-amber-300">Result Entry</p>
           <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">
-            Marks in, <span className="text-emerald-300">stress out.</span>
+            Marks in, <span className="text-amber-300">stress out.</span>
           </h1>
-          <p className="mt-1 text-sm text-emerald-100/90">
+          <p className="mt-1 text-sm text-orange-100/90">
             Bulkedit all obtained marks for any class in one go.
           </p>
         </div>
         <button
           onClick={scrollToFilters}
-          className="mt-5 rounded-full bg-white px-6 py-3 text-sm font-bold text-emerald-800 shadow-md transition hover:scale-[1.03] sm:mt-0"
+          className="mt-5 rounded-full bg-amber-300 px-6 py-3 text-sm font-bold text-orange-950 shadow-md transition hover:scale-[1.03] hover:bg-amber-200 sm:mt-0"
         >
           Start Entry ➔
         </button>
@@ -138,7 +141,7 @@ export default function ResultEntryPage() {
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-full rounded-2xl header-gradient py-4 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-emerald-700/20 transition hover:brightness-110 disabled:opacity-60 sm:w-auto sm:px-10"
+              className="w-full rounded-2xl bg-gradient-to-r from-orange-700 to-orange-600 py-4 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-orange-900/25 transition hover:brightness-110 disabled:opacity-60 sm:w-auto sm:px-10"
             >
               {submitting ? 'Submitting...' : 'Submit All Marks'}
             </button>

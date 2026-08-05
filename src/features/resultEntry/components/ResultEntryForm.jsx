@@ -13,13 +13,13 @@ export default function ResultEntryForm({ onSubmit, loading }) {
   };
 
 const selectClass =
-    'w-full rounded-2xl border border-white/60 bg-white/80 px-3 py-3 text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500';
+    'w-full rounded-2xl border border-orange-200/70 bg-white/80 px-3 py-3 text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500';
   const fieldClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500';
 
   return (
     <form onSubmit={handleSubmit} className="glass rounded-3xl p-5">
       <div className="flex items-center gap-2">
-        <span className="flex h-9 w-9 items-center justify-center rounded-2xl header-gradient text-white shadow-md">
+        <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-700 to-amber-600 text-white shadow-md shadow-orange-900/15">
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
             <path d="M10 4 4 10v10h6v-6h4v6h6V10l-6-6z" />
           </svg>
@@ -91,7 +91,7 @@ const selectClass =
       <button
         type="submit"
         disabled={loading}
-        className="mt-5 w-full rounded-2xl header-gradient py-3.5 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-emerald-700/20 transition hover:brightness-110 disabled:opacity-60 sm:w-auto sm:px-10"
+        className="mt-5 w-full rounded-2xl bg-gradient-to-r from-orange-700 to-orange-600 py-3.5 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-orange-900/25 transition hover:brightness-110 disabled:opacity-60 sm:w-auto sm:px-10"
       >
         {loading ? 'Loading...' : 'Get Students'}
       </button>

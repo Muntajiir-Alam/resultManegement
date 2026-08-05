@@ -84,14 +84,15 @@ export default function EditableMarksTable({ students, onChange }) {
   };
 
   const thCls =
-    'border-b border-slate-200 bg-slate-100/70 px-3 py-2.5 text-center text-[11px] font-bold uppercase tracking-wide text-slate-600';
-  const tdNumCls = 'whitespace-nowrap border-b border-slate-100 bg-white/40 px-3 py-2 text-center text-sm text-slate-700';
+    'border-b border-orange-200/70 bg-orange-100/70 px-3 py-2.5 text-center text-[11px] font-bold uppercase tracking-wide text-orange-900';
+  const tdNumCls = 'whitespace-nowrap border-b border-orange-100/70 bg-white/40 px-3 py-2 text-center text-sm text-slate-700';
   const tdTextCls =
-    'whitespace-nowrap border-b border-slate-100 bg-white/40 px-3 py-2 text-left text-sm text-slate-700';
+    'whitespace-nowrap border-b border-orange-100/70 bg-white/40 px-3 py-2 text-left text-sm text-slate-700';
   const inputCls =
-    'w-full rounded-xl border border-emerald-200 bg-white px-2 py-1.5 text-center text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500';
-  const activeInputCls = 'focus:ring-cyan-500 ring-2 ring-cyan-500 border-cyan-400';
-  const maxBadge = 'inline-flex min-w-[44px] justify-center rounded-lg bg-slate-700 px-2 py-1 text-xs font-semibold text-white';
+    'w-full rounded-xl border border-orange-200 bg-white px-2 py-1.5 text-center text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500';
+  const activeInputCls = 'focus:ring-amber-400 ring-2 ring-amber-400 border-amber-400';
+  const maxBadge =
+    'inline-flex min-w-[44px] justify-center rounded-lg bg-gradient-to-br from-orange-900 to-orange-950 px-2 py-1 text-xs font-semibold text-amber-200';
 
   const renderCell = (student, field, index) => {
     const isActive = activeIndex === index;
@@ -141,7 +142,7 @@ export default function EditableMarksTable({ students, onChange }) {
     <div className="glass rounded-3xl p-4">
       <div className="mb-3 flex items-center justify-between px-1">
         <h3 className="font-display text-base font-bold text-slate-800">Students List</h3>
-        <span className="rounded-full header-gradient px-3 py-1 text-xs font-semibold text-white">
+        <span className="rounded-full bg-gradient-to-r from-orange-700 to-orange-600 px-3 py-1 text-xs font-semibold text-white">
           {students.length} student{students.length !== 1 ? 's' : ''}
         </span>
       </div>
@@ -168,7 +169,7 @@ export default function EditableMarksTable({ students, onChange }) {
           </thead>
           <tbody>
             {students.map((student, idx) => (
-              <tr key={student.admissionNo} className="hover:bg-emerald-50/50">
+              <tr key={student.admissionNo} className="hover:bg-orange-50/60">
                 <td className={tdNumCls}>{idx + 1}</td>
                 <td className={tdNumCls}>{student.admissionNo}</td>
                 <td className={tdTextCls}>

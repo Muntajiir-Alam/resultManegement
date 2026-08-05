@@ -1,14 +1,8 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
-
-function PinIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 text-emerald-700" fill="currentColor">
-      <path d="M12 2c-3.9 0-7 3.1-7 7 0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" />
-    </svg>
-  );
-}
+import AppSidebar from './AppSidebar';
 
 function BellIcon() {
   return (
@@ -18,50 +12,83 @@ function BellIcon() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-slate-700" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 const tabs = [
   { to: '/student', label: 'Results', end: true },
   { to: '/student/merit', label: 'Merit', end: false }
 ];
 
-const base = 'flex items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold transition';
-const stateCls = ({ isActive }) =>
-  isActive
-    ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30'
-    : 'text-slate-500 hover:bg-emerald-500/10 hover:text-emerald-700';
-
 export default function StudentNav() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const name = useSelector((state) => state.auth.user?.name);
+  const [open, setOpen] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate('/login');
   };
 
-  const initial = (name || 'S').trim().charAt(0).toUpperCase();
+  const closeDrawer = () => setOpen(false);
+  const initial = (name || 'S').trim().charAt(0).toUpperCase() || 'S';
 
   return (
     <>
+      {/* Desktop left sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 overflow-hidden rounded-r-3xl md:block">
+        <AppSidebar
+          title="Student Portal"
+          subtitle="Results & Rankings"
+          role="Student"
+          items={tabs}
+          name={name}
+          onLogout={handleLogout}
+        />
+      </aside>
+
+      {/* Mobile drawer overlay */}
+      {open && (
+        <div className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm md:hidden" onClick={closeDrawer} />
+      )}
+
+      {/* Mobile left sidebar drawer */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 overflow-hidden rounded-r-3xl transition-transform duration-300 md:hidden ${
+          open ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <AppSidebar
+          title="Student Portal"
+          subtitle="Results & Rankings"
+          role="Student"
+          items={tabs}
+          name={name}
+          onLogout={handleLogout}
+          onClose={closeDrawer}
+        />
+      </aside>
+
+      {/* Top bar */}
       <header className="glass-deep sticky top-0 z-20 px-4 py-3 sm:px-6">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <PinIcon />
-            <div>
-              <p className="font-display text-sm font-bold leading-tight text-slate-800">Student Portal</p>
-              <p className="hidden text-xs text-slate-500 sm:block">Results &amp; Rankings</p>
-            </div>
-          </div>
+        <div className="mx-auto flex items-center justify-between gap-3">
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Open menu"
+            className="rounded-xl bg-white/70 p-2 shadow-sm md:hidden"
+          >
+            <MenuIcon />
+          </button>
 
-          <nav className="hidden items-center gap-1 md:flex">
-            {tabs.map((n) => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => `${base} ${stateCls({ isActive })}`}>
-                {n.label}
-              </NavLink>
-            ))}
-          </nav>
+          <div className="hidden text-sm font-semibold text-slate-500 md:block">Student Panel</div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="ml-auto flex items-center gap-2.5">
             <button onClick={handleLogout} className="relative rounded-full bg-white/70 p-2 shadow-sm">
               <BellIcon />
               <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
@@ -76,27 +103,6 @@ export default function StudentNav() {
           </div>
         </div>
       </header>
-
-      <nav className="fixed inset-x-4 bottom-4 z-30 flex justify-center md:hidden">
-        <div className="glass flex w-full max-w-sm items-center gap-1 rounded-3xl px-2 py-2">
-          {tabs.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.end}
-              className={({ isActive }) => `${base} ${stateCls({ isActive })} flex-1`}
-            >
-              {n.label}
-            </NavLink>
-          ))}
-          <button
-            onClick={handleLogout}
-            className="flex flex-1 items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold text-rose-500 transition hover:bg-rose-500/10"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
     </>
   );
 }
