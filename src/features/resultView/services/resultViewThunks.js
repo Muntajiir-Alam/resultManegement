@@ -3,7 +3,7 @@ import api from '../../../shared/api';
 
 export const fetchResult = createAsyncThunk('resultView/fetchResult', async (_, { rejectWithValue }) => {
   try {
-    const response = await api.get('/results/me');
+    const response = await api.get('/api/results/me');
     return response.data;
   } catch (error) {
     if (!error.response) {

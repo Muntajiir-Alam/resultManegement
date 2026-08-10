@@ -1,4 +1,5 @@
 import api from '../../../shared/api';
+import store from '../../../store';
 
 export const examOptions = [
   'Quarterly Exam',
@@ -71,7 +72,12 @@ const demoStudents = [
 // Step 1 + 2: Fetch students for the selected exam/class/section/subject.
 export async function fetchStudents(filters) {
   try {
-    const response = await api.get('/students', { params: filters });
+    const response = await api.get('/api/students', {
+      headers: {
+        'Authorization': `Bearer ${store.getState().auth.token}`
+      },
+      params: filters
+    });
     return response.data.students ?? response.data;
   } catch (error) {
     if (!error.response) {
@@ -84,7 +90,11 @@ export async function fetchStudents(filters) {
 // Step 3: Bulk update all obtained marks for the filtered set.
 export async function submitMarks(payload) {
   try {
-    const response = await api.post('/marks/bulk', payload);
+    const response = await api.post('/api/results/bulk', payload, {
+      headers: {
+        'Authorization': `Bearer ${store.getState().auth.token}`
+      }
+    });
     return response.data;
   } catch (error) {
     if (!error.response) {
@@ -111,7 +121,7 @@ const demoResult = {
 // Step 4: Fetch a single student's full result.
 export async function fetchResult(details) {
   try {
-    const response = await api.get('/result', { params: details });
+    const response = await api.get('/api/result', { params: details });
     return response.data;
   } catch (error) {
     if (!error.response) {

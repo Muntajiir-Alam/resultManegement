@@ -1,9 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import authApi from './axiosConfig';
+import api from '../../../shared/api';
 
 export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
   try {
-    const response = await authApi.post('/auth/login', credentials);
+    const response = await api.post('/api/auth/login', {
+      username: credentials.username,
+      email: credentials.email,
+      password: credentials.password
+    });
     return response.data;
   } catch (error) {
     if (!error.response) {
@@ -25,7 +29,7 @@ export const requestPasswordReset = createAsyncThunk(
   'auth/requestPasswordReset',
   async (email, { rejectWithValue }) => {
     try {
-      const response = await authApi.post('/auth/forgot-password', { email });
+      const response = await api.post('/api/auth/forgot-password', { email });
       return response.data;
     } catch (error) {
       if (!error.response) {

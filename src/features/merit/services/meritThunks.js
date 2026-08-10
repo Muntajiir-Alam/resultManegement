@@ -3,7 +3,7 @@ import api from '../../../shared/api';
 
 export const fetchMeritList = createAsyncThunk('merit/fetchMeritList', async (_, { rejectWithValue }) => {
   try {
-    const response = await api.get('/merit');
+    const response = await api.get('/api/merit');
     return response.data;
   } catch (error) {
     if (!error.response) {

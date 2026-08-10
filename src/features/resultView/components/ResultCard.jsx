@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+import api from '../../../shared/api';
+
 function MedalIcon({ color }) {
   return (
     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
@@ -7,8 +10,32 @@ function MedalIcon({ color }) {
 }
 
 export default function ResultCard({ report }) {
+  const token = useSelector((state) => state.auth.token);
   const totalMarks = report.subjects.reduce((sum, subject) => sum + subject.marks, 0);
   const average = (totalMarks / report.subjects.length).toFixed(1);
+
+  const handleDownload = async () => {
+    try {
+      const response = await api.get(`/api/report-cards/pdf/${report.student.roll}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        params: { exam: report.exam },
+        responseType: 'blob'
+      });
+      const blob = response.data;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `report-card-${report.student.roll}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert(err.response?.data?.message || err.message || 'Failed to download report card.');
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -60,7 +87,10 @@ export default function ResultCard({ report }) {
         </div>
       </div>
 
-      <button className="w-full rounded-2xl header-gradient py-4 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-emerald-700/20 transition hover:brightness-110 sm:w-auto sm:px-10">
+      <button
+        onClick={handleDownload}
+        className="w-full rounded-2xl header-gradient py-4 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-emerald-700/20 transition hover:brightness-110 sm:w-auto sm:px-10"
+      >
         Download Report
       </button>
     </div>

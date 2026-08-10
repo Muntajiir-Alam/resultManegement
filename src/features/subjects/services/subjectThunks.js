@@ -1,11 +1,17 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../../shared/api';
 
-export const fetchSubjects = createAsyncThunk('subjects/fetchSubjects', async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get('/subjects');
-    return response.data;
-  } catch (error) {
+export const fetchSubjects = createAsyncThunk(
+  'subjects/fetchSubjects',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const response = await api.get('/api/subjects', {
+        headers: {
+          'Authorization': `Bearer ${getState().auth.token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
     if (!error.response) {
       return [
         { id: 'subject-1', name: 'Mathematics', maxMarks: 100 },
@@ -18,7 +24,7 @@ export const fetchSubjects = createAsyncThunk('subjects/fetchSubjects', async (_
 
 export const saveSubject = createAsyncThunk('subjects/saveSubject', async (subject, { rejectWithValue }) => {
   try {
-    const response = await api.post('/subjects', subject);
+    const response = await api.post('/api/subjects', subject);
     return response.data;
   } catch (error) {
     if (!error.response) {
@@ -30,7 +36,7 @@ export const saveSubject = createAsyncThunk('subjects/saveSubject', async (subje
 
 export const removeSubject = createAsyncThunk('subjects/removeSubject', async (subjectId, { rejectWithValue }) => {
   try {
-    await api.delete(`/subjects/${subjectId}`);
+    await api.delete(`/api/subjects/${subjectId}`);
     return subjectId;
   } catch (error) {
     if (!error.response) {

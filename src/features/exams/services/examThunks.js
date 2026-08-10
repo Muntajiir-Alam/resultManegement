@@ -1,24 +1,31 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../../../shared/api';
 
-export const fetchExams = createAsyncThunk('exams/fetchExams', async (_, { rejectWithValue }) => {
-  try {
-    const response = await api.get('/exams');
-    return response.data;
-  } catch (error) {
-    if (!error.response) {
-      return [
-        { id: 'exam-1', title: 'Quarterly Exam', date: '2026-08-10' },
-        { id: 'exam-2', title: 'Mid-Term Exam', date: '2026-09-15' }
-      ];
+export const fetchExams = createAsyncThunk(
+  'exams/fetchExams',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const response = await api.get('/api/exams', {
+        headers: {
+          'Authorization': `Bearer ${getState().auth.token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      if (!error.response) {
+        return [
+          { id: 'exam-1', title: 'Quarterly Exam', date: '2026-08-10' },
+          { id: 'exam-2', title: 'Mid-Term Exam', date: '2026-09-15' }
+        ];
+      }
+      return rejectWithValue(error.response.data || { message: 'Unable to load exams.' });
     }
-    return rejectWithValue(error.response.data || { message: 'Unable to load exams.' });
   }
-});
+);
 
 export const createExam = createAsyncThunk('exams/createExam', async (exam, { rejectWithValue }) => {
   try {
-    const response = await api.post('/exams', exam);
+    const response = await api.post('/api/exams', exam);
     return response.data;
   } catch (error) {
     if (!error.response) {
@@ -30,7 +37,7 @@ export const createExam = createAsyncThunk('exams/createExam', async (exam, { re
 
 export const updateExam = createAsyncThunk('exams/updateExam', async (exam, { rejectWithValue }) => {
   try {
-    const response = await api.put(`/exams/${exam.id}`, exam);
+    const response = await api.put(`/api/exams/${exam.id}`, exam);
     return response.data;
   } catch (error) {
     if (!error.response) {
@@ -42,7 +49,7 @@ export const updateExam = createAsyncThunk('exams/updateExam', async (exam, { re
 
 export const deleteExam = createAsyncThunk('exams/deleteExam', async (examId, { rejectWithValue }) => {
   try {
-    await api.delete(`/exams/${examId}`);
+    await api.delete(`/api/exams/${examId}`);
     return examId;
   } catch (error) {
     if (!error.response) {
