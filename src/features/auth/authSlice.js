@@ -1,13 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login, requestPasswordReset } from './services/authThunks';
+import { login } from './services/authThunks';
 
 const initialState = {
   user: null,
   token: null,
   isAuthenticated: false,
   status: 'idle',
-  error: null,
-  resetMessage: null
+  error: null
 };
 
 const authSlice = createSlice({
@@ -36,18 +35,6 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload?.message || 'Login failed';
-      })
-      .addCase(requestPasswordReset.pending, (state) => {
-        state.status = 'loading';
-        state.resetMessage = null;
-      })
-      .addCase(requestPasswordReset.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.resetMessage = action.payload.message;
-      })
-      .addCase(requestPasswordReset.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload?.message || 'Request failed';
       });
   }
 });

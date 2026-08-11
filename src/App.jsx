@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './features/auth/pages/Login';
-import ForgotPassword from './features/auth/pages/ForgotPassword';
 import ProtectRoute from './features/auth/components/ProtectRoute';
 import AdminLayout from './navigation/AdminLayout';
 import StudentNav from './navigation/StudentNav';
@@ -36,7 +35,6 @@ export default function App() {
     <Routes>
       <Route path="/" element={<HomeIndex />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route
         path="/admin/*"
         element={
