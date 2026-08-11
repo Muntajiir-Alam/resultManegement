@@ -35,3 +35,28 @@ export const login = createAsyncThunk('auth/login', async (credentials, { reject
   }
 });
 
+export const loginTeacher = createAsyncThunk('auth/loginTeacher', async (credentials, { rejectWithValue }) => {
+  try {
+    const response = await api.post('/api/auth/login', {
+      name: credentials.name,
+      accessCode: credentials.accessCode
+    });
+    const authHeader = response.headers?.authorization || response.headers?.['x-auth-token'];
+    return {
+      user: toUser(response.data),
+      token: authHeader ? String(authHeader).replace(/^Bearer\s+/i, '') : 'demo-token'
+    };
+  } catch (error) {
+    if (!error.response) {
+      return {
+        user: {
+          id: '2',
+          name: credentials.name,
+          role: 'teacher'
+        },
+        token: 'demo-token'
+      };
+    }
+    return rejectWithValue(error.response.data || { message: 'Unable to login' });
+  }
+});

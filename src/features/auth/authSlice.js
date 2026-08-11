@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login } from './services/authThunks';
+import { login, loginTeacher } from './services/authThunks';
 
 const initialState = {
   user: null,
@@ -21,21 +21,28 @@ const authSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
+    const pending = (state) => {
+      state.status = 'loading';
+      state.error = null;
+    };
+    const fulfilled = (state, action) => {
+      state.status = 'succeeded';
+      state.user = action.payload.user;
+      state.token = action.payload.token;
+      state.isAuthenticated = true;
+    };
+    const rejected = (state, action) => {
+      state.status = 'failed';
+      state.error = action.payload?.message || 'Login failed';
+    };
+
     builder
-      .addCase(login.pending, (state) => {
-        state.status = 'loading';
-        state.error = null;
-      })
-      .addCase(login.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload?.message || 'Login failed';
-      });
+      .addCase(login.pending, pending)
+      .addCase(login.fulfilled, fulfilled)
+      .addCase(login.rejected, rejected)
+      .addCase(loginTeacher.pending, pending)
+      .addCase(loginTeacher.fulfilled, fulfilled)
+      .addCase(loginTeacher.rejected, rejected);
   }
 });
 

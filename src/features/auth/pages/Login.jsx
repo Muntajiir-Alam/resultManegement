@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import { login } from '../services/authThunks';
+import { login, loginTeacher } from '../services/authThunks';
 import ErrorBanner from '../../../shared/components/ErrorBanner';
 
 function EyeIcon({ open }) {
@@ -50,7 +50,11 @@ export default function Login() {
   const [showAccessCode, setShowAccessCode] = useState(false);
 
   const handleLogin = (data) => {
-    dispatch(login(isAdmin ? { role: data.role, email: data.email, password: data.password } : { role: data.role, name: data.name, accessCode: data.accessCode }));
+    if (isAdmin) {
+      dispatch(login({ role: data.role, email: data.email, password: data.password }));
+    } else {
+      dispatch(loginTeacher({ role: data.role, name: data.name, accessCode: data.accessCode }));
+    }
   };
 
   if (isAuthenticated) {
