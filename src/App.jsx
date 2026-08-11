@@ -8,6 +8,8 @@ import MeritList from './features/merit/pages/MeritList';
 import ViewResult from './features/resultView/pages/ViewResult';
 import ResultEntryPage from './features/resultEntry/pages/ResultEntryPage';
 import ViewResultPage from './features/resultEntry/pages/ViewResultPage';
+import TeachersList from './features/teachers/pages/TeachersList';
+import TeacherAccessPage from './features/teachers/pages/TeacherAccessPage';
 
 function HomeIndex() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -47,6 +49,8 @@ export default function App() {
         <Route path="result-entry" element={<ResultEntryPage />} />
         <Route path="view-result" element={<ViewResultPage />} />
         <Route path="merit" element={<MeritList />} />
+        <Route path="teachers" element={<TeachersList />} />
+        <Route path="teacher-access" element={<TeacherAccessPage />} />
       </Route>
       <Route
         path="/student/*"

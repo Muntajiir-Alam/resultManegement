@@ -22,6 +22,8 @@ function MenuIcon() {
 
 const navItems = [
   { to: '/admin', label: 'Home', end: true },
+  { to: '/admin/teachers', label: 'Teachers', end: false },
+  { to: '/admin/teacher-access', label: 'Access', end: false },
   { to: '/admin/view-result', label: 'Result', end: false },
   { to: '/admin/merit', label: 'Merit', end: false }
 ];
