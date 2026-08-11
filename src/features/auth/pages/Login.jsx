@@ -37,10 +37,10 @@ export default function Login() {
   const { register, handleSubmit, watch, control } = useForm({
     defaultValues: {
       role: 'admin',
-      email: 'admin@example.com',
-      password: 'password',
-      name: 'Teacher User',
-      accessCode: '123456'
+      email: 'admin@school.com',
+      password: 'admin123',
+      name: 'John',
+      accessCode: 'TCH001'
     }
   });
 
@@ -106,7 +106,7 @@ export default function Login() {
                 <input
                   type="email"
                   {...register('email')}
-                  placeholder="admin@example.com"
+                  placeholder="admin@school.com"
                   autoComplete="email"
                   className={`${fieldCls} mb-4`}
                 />

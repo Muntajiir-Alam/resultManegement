@@ -4,7 +4,6 @@ import TeacherAccessForm from '../components/TeacherAccessForm';
 import { createTeacher } from '../services/teacherAPI';
 
 export default function TeacherAccessPage() {
-  const token = useSelector((state) => state.auth.token);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
@@ -14,7 +13,7 @@ export default function TeacherAccessPage() {
     setError(null);
     setMessage(null);
     try {
-      const result = await createTeacher(payload, token);
+      const result = await createTeacher(payload);
       setMessage(`Teacher "${result.data.name}" accessed successfully.`);
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Unable to access teacher.');
