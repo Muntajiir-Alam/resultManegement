@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
 import { login } from '../services/authThunks';
 import ErrorBanner from '../../../shared/components/ErrorBanner';
 
@@ -20,19 +20,22 @@ const roles = [
 export default function Login() {
   const dispatch = useDispatch();
   const { error, status, isAuthenticated, user } = useSelector((state) => state.auth);
-  const [role, setRole] = useState('admin');
 
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('password');
+  const { register, handleSubmit, watch, control } = useForm({
+    defaultValues: {
+      role: 'admin',
+      email: 'admin@example.com',
+      password: 'password',
+      name: 'Teacher User',
+      accessCode: '123456'
+    }
+  });
 
-  const [name, setName] = useState('Teacher User');
-  const [accessCode, setAccessCode] = useState('123456');
-
+  const role = watch('role');
   const isAdmin = role === 'admin';
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    dispatch(login(isAdmin ? { role, email, password } : { role, name, accessCode }));
+  const handleLogin = (data) => {
+    dispatch(login(isAdmin ? { role: data.role, email: data.email, password: data.password } : { role: data.role, name: data.name, accessCode: data.accessCode }));
   };
 
   if (isAuthenticated) {
@@ -55,30 +58,35 @@ export default function Login() {
             <p className="mt-1 text-sm text-slate-500">Sign in to the result management system.</p>
           </div>
 
-          <form onSubmit={handleLogin} className="glass rounded-3xl p-6">
-            <div className="mb-5 grid grid-cols-2 gap-1 rounded-2xl bg-slate-800/10 p-1">
-              {roles.map((r) => (
-                <button
-                  key={r.key}
-                  type="button"
-                  onClick={() => setRole(r.key)}
-                  className={`flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 font-display text-sm font-bold transition ${
-                    role === r.key ? 'header-gradient text-white shadow-md' : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  <span>{r.icon}</span>
-                  {r.label}
-                </button>
-              ))}
-            </div>
+          <form onSubmit={handleSubmit(handleLogin)} className="glass rounded-3xl p-6">
+            <Controller
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <div className="mb-5 grid grid-cols-2 gap-1 rounded-2xl bg-slate-800/10 p-1">
+                  {roles.map((r) => (
+                    <button
+                      key={r.key}
+                      type="button"
+                      onClick={() => field.onChange(r.key)}
+                      className={`flex items-center justify-center gap-2 rounded-xl px-3 py-2.5 font-display text-sm font-bold transition ${
+                        field.value === r.key ? 'header-gradient text-white shadow-md' : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                    >
+                      <span>{r.icon}</span>
+                      {r.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            />
 
             {isAdmin ? (
               <>
                 <label className={labelCls}>Email / Username</label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register('email')}
                   placeholder="admin@example.com"
                   autoComplete="email"
                   className={`${fieldCls} mb-4`}
@@ -86,8 +94,7 @@ export default function Login() {
                 <label className={labelCls}>Password</label>
                 <input
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  {...register('password')}
                   placeholder="Password"
                   autoComplete="current-password"
                   className={fieldCls}
@@ -98,16 +105,14 @@ export default function Login() {
                 <label className={labelCls}>Full Name</label>
                 <input
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  {...register('name')}
                   placeholder="Enter your name"
                   className={`${fieldCls} mb-4`}
                 />
                 <label className={labelCls}>Access Code</label>
                 <input
                   type="password"
-                  value={accessCode}
-                  onChange={(e) => setAccessCode(e.target.value)}
+                  {...register('accessCode')}
                   placeholder="Enter access code"
                   autoComplete="current-password"
                   className={fieldCls}

@@ -1,15 +1,11 @@
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { examOptions, classOptions, sectionOptions, subjectOptions } from '../services/entryApi';
 
 export default function ResultEntryForm({ onSubmit, loading }) {
-  const [exam, setExam] = useState('');
-  const [className, setClassName] = useState('');
-  const [section, setSection] = useState('');
-  const [subject, setSubject] = useState('');
+  const { register, handleSubmit } = useForm();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({ exam, class: className, section, subject });
+  const handleFormSubmit = (data) => {
+    onSubmit({ exam: data.exam, class: data.class, section: data.section, subject: data.subject });
   };
 
 const selectClass =
@@ -17,7 +13,7 @@ const selectClass =
   const fieldClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500';
 
   return (
-    <form onSubmit={handleSubmit} className="glass rounded-3xl p-5">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="glass rounded-3xl p-5">
       <div className="flex items-center gap-2">
         <span className="flex h-9 w-9 items-center justify-center rounded-2xl header-gradient text-white shadow-md">
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -33,7 +29,7 @@ const selectClass =
       <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <label className={fieldClass}>Exam</label>
-          <select value={exam} onChange={(e) => setExam(e.target.value)} required className={selectClass}>
+          <select {...register('exam')} required className={selectClass}>
             <option value="" disabled>
               Select exam
             </option>
@@ -47,7 +43,7 @@ const selectClass =
 
         <div>
           <label className={fieldClass}>Class</label>
-          <select value={className} onChange={(e) => setClassName(e.target.value)} required className={selectClass}>
+          <select {...register('class')} required className={selectClass}>
             <option value="" disabled>
               Select class
             </option>
@@ -61,7 +57,7 @@ const selectClass =
 
         <div>
           <label className={fieldClass}>Section</label>
-          <select value={section} onChange={(e) => setSection(e.target.value)} required className={selectClass}>
+          <select {...register('section')} required className={selectClass}>
             <option value="" disabled>
               Select section
             </option>
@@ -75,7 +71,7 @@ const selectClass =
 
         <div>
           <label className={fieldClass}>Subject</label>
-          <select value={subject} onChange={(e) => setSubject(e.target.value)} required className={selectClass}>
+          <select {...register('subject')} required className={selectClass}>
             <option value="" disabled>
               Select subject
             </option>

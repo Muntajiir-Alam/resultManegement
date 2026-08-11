@@ -1,11 +1,9 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { examOptions, classOptions, sectionOptions, fetchResult } from '../services/entryApi';
 
 export default function ViewResultPage() {
-  const [exam, setExam] = useState('');
-  const [className, setClassName] = useState('');
-  const [section, setSection] = useState('');
-  const [admissionNo, setAdmissionNo] = useState('');
+  const { register, handleSubmit } = useForm();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
@@ -14,14 +12,13 @@ export default function ViewResultPage() {
     'w-full rounded-2xl border border-white/60 bg-white/80 px-3 py-3 text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500';
   const fieldClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500';
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleFormSubmit = async (data) => {
     setLoading(true);
     setError(null);
     setResult(null);
     try {
-      const data = await fetchResult({ exam, class: className, section, admissionNo });
-      setResult(data);
+      const resultData = await fetchResult({ exam: data.exam, class: data.class, section: data.section, admissionNo: data.admissionNo });
+      setResult(resultData);
     } catch (err) {
       setError(err?.response?.data?.message || 'No result found for these details.');
     } finally {
@@ -38,7 +35,7 @@ export default function ViewResultPage() {
       <h2 className="font-display text-2xl font-extrabold text-slate-800">View Result</h2>
       <p className="-mt-4 text-sm text-slate-500">Check a student's full mark sheet.</p>
 
-      <form onSubmit={handleSubmit} className="glass rounded-3xl p-5">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="glass rounded-3xl p-5">
         <div className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-2xl header-gradient text-white shadow-md">
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -51,7 +48,7 @@ export default function ViewResultPage() {
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div>
             <label className={fieldClass}>Exam</label>
-            <select value={exam} onChange={(e) => setExam(e.target.value)} required className={selectClass}>
+            <select {...register('exam')} required className={selectClass}>
               <option value="" disabled>
                 Select
               </option>
@@ -64,7 +61,7 @@ export default function ViewResultPage() {
           </div>
           <div>
             <label className={fieldClass}>Class</label>
-            <select value={className} onChange={(e) => setClassName(e.target.value)} required className={selectClass}>
+            <select {...register('class')} required className={selectClass}>
               <option value="" disabled>
                 Select
               </option>
@@ -77,7 +74,7 @@ export default function ViewResultPage() {
           </div>
           <div>
             <label className={fieldClass}>Section</label>
-            <select value={section} onChange={(e) => setSection(e.target.value)} required className={selectClass}>
+            <select {...register('section')} required className={selectClass}>
               <option value="" disabled>
                 Select
               </option>
@@ -91,8 +88,7 @@ export default function ViewResultPage() {
           <div>
             <label className={fieldClass}>Admission No</label>
             <input
-              value={admissionNo}
-              onChange={(e) => setAdmissionNo(e.target.value)}
+              {...register('admissionNo')}
               placeholder="e.g. 2026-001"
               required
               className="w-full rounded-2xl border border-white/60 bg-white/80 px-3 py-3 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
