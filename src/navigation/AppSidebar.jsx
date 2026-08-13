@@ -63,36 +63,6 @@ function IconClose() {
   );
 }
 
-function IconSchool() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 10 12 5 2 10l10 5 10-5Z" />
-      <path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5" />
-      <path d="M22 10v6" />
-    </svg>
-  );
-}
-
-function IconGrid() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="3" y="3" width="7" height="7" rx="1.5" />
-      <rect x="14" y="3" width="7" height="7" rx="1.5" />
-      <rect x="3" y="14" width="7" height="7" rx="1.5" />
-      <rect x="14" y="14" width="7" height="7" rx="1.5" />
-    </svg>
-  );
-}
-
-function IconClipboard() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="5" y="4" width="14" height="17" rx="2.5" />
-      <path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3.5" />
-    </svg>
-  );
-}
-
 function IconUpload() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -126,9 +96,6 @@ const iconMap = {
   'Teachers': <IconUsers />,
   'Access': <IconKey />,
   'Students': <IconUsers />,
-  'Classes': <IconSchool />,
-  'Sections': <IconGrid />,
-  'Exams': <IconClipboard />,
   'Upload Marksheet': <IconUpload />,
   'Remove Marksheet': <IconTrash />,
   'Report Card': <IconDoc />

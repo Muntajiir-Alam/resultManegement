@@ -10,10 +10,8 @@ import ViewResult from './features/resultView/pages/ViewResult';
 import ViewResultPage from './features/resultEntry/pages/ViewResultPage';
 import TeachersList from './features/teachers/pages/TeachersList';
 import TeacherAccessPage from './features/teachers/pages/TeacherAccessPage';
+import HomePage from './features/home/pages/HomePage';
 import StudentsTab from './features/teachers/components/StudentsTab';
-import ClassesTab from './features/teachers/components/ClassesTab';
-import SectionsTab from './features/teachers/components/SectionsTab';
-import ExamsTab from './features/teachers/components/ExamsTab';
 import ResultTab from './features/teachers/components/ResultTab';
 import UploadMarksheetPage from './features/teachers/pages/UploadMarksheetPage';
 import RemoveMarksheetTab from './features/teachers/components/RemoveMarksheetTab';
@@ -61,7 +59,7 @@ export default function App() {
           </ProtectRoute>
         }
       >
-        <Route index element={<Navigate to="view-result" replace />} />
+        <Route index element={<HomePage />} />
         <Route path="view-result" element={<ViewResultPage />} />
         <Route path="merit" element={<MeritList />} />
         <Route path="teachers" element={<TeachersList />} />
@@ -75,10 +73,8 @@ export default function App() {
           </ProtectRoute>
         }
       >
-        <Route index element={<StudentsTab />} />
-        <Route path="classes" element={<ClassesTab />} />
-        <Route path="sections" element={<SectionsTab />} />
-        <Route path="exams" element={<ExamsTab />} />
+        <Route index element={<HomePage />} />
+        <Route path="students" element={<StudentsTab />} />
         <Route path="result" element={<ResultTab />} />
         <Route path="upload" element={<UploadMarksheetPage />} />
         <Route path="remove" element={<RemoveMarksheetTab />} />

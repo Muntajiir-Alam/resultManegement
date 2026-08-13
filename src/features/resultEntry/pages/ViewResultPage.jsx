@@ -1,219 +1,195 @@
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { examOptions, classOptions, sectionOptions, fetchResult } from '../services/entryApi';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  fetchExams,
+  fetchClasses,
+  fetchSections,
+  fetchStudents,
+  fetchReportCard
+} from '../../teachers/services/teacherPanelAPI';
+import { Field, Select, PrimaryBtn, Message, Card, thCls, tdCls } from '../../teachers/components/TeacherUI';
 
 export default function ViewResultPage() {
-  const { register, handleSubmit } = useForm();
+  const token = useSelector((state) => state.auth.token);
+
+  const [exams, setExams] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [examValue, setExamValue] = useState('');
+  const [classValue, setClassValue] = useState('');
+  const [sectionValue, setSectionValue] = useState('');
+  const [admissionNo, setAdmissionNo] = useState('');
+
+  const [loadingOptions, setLoadingOptions] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [report, setReport] = useState(null);
 
-  const selectClass =
-    'w-full rounded-2xl border border-white/60 bg-white/80 px-3 py-3 text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500';
-  const fieldClass = 'mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500';
+  const loadOptions = async () => {
+    setLoadingOptions(true);
+    setError(null);
+    try {
+      const [e, c] = await Promise.all([fetchExams(token), fetchClasses(token)]);
+      setExams(e);
+      setClasses(c);
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Could not load filters.');
+    } finally {
+      setLoadingOptions(false);
+    }
+  };
 
-  const handleFormSubmit = async (data) => {
+  useEffect(() => {
+    loadOptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClassChange = async (className) => {
+    setClassValue(className);
+    setSectionValue('');
+    setSections([]);
+    if (!className) return;
+    try {
+      setSections(await fetchSections(token, className));
+    } catch (e) {
+      setError(e?.response?.data?.message || 'Could not load sections.');
+    }
+  };
+
+  const handleGetResult = async () => {
+    if (!examValue || !classValue || !sectionValue || !admissionNo.trim()) {
+      setError('Please fill exam, class, section and admission no.');
+      return;
+    }
     setLoading(true);
     setError(null);
-    setResult(null);
+    setReport(null);
     try {
-      const resultData = await fetchResult({ exam: data.exam, class: data.class, section: data.section, admissionNo: data.admissionNo });
-      setResult(resultData);
-    } catch (err) {
-      setError(err?.response?.data?.message || 'No result found for these details.');
+      const students = await fetchStudents(token, { class: classValue, section: sectionValue });
+      const student = students.find((s) => s.admissionNumber === admissionNo.trim());
+      if (!student) {
+        setError('No student found with this admission number.');
+        return;
+      }
+      setReport(await fetchReportCard(token, student._id, examValue));
+    } catch (e) {
+      setError(e?.response?.data?.message || 'No result found for these details.');
     } finally {
       setLoading(false);
     }
   };
 
-  const thCls =
-    'border-b border-slate-200 bg-slate-100/70 px-3 py-2.5 text-left text-[11px] font-bold uppercase tracking-wide text-slate-600';
-  const tdCls = 'border-b border-slate-100 bg-white/40 px-3 py-2.5 text-sm text-slate-700';
+  const academics = report?.academics || [];
+  const meta = report?.metaData || null;
 
   return (
     <div className="space-y-5">
       <h2 className="font-display text-2xl font-extrabold text-slate-800">View Result</h2>
       <p className="-mt-4 text-sm text-slate-500">Check a student's full mark sheet.</p>
 
-      <form onSubmit={handleSubmit(handleFormSubmit)} className="glass rounded-3xl p-5">
-        <div className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-2xl header-gradient text-white shadow-md">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-              <path d="M3 5h18v4H3zM3 11h12v4H3zM3 17h7v2H3zM17 15l3 2v3h-2v-2.2l-3-2z" />
-            </svg>
-          </span>
-          <h3 className="font-display text-base font-bold text-slate-800">Find a student</h3>
-        </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <div>
-            <label className={fieldClass}>Exam</label>
-            <select {...register('exam')} required className={selectClass}>
-              <option value="" disabled>
-                Select
-              </option>
-              {examOptions.map((o) => (
-                <option key={o} value={o}>
-                  {o}
-                </option>
+      <Card title="Find a student" subtitle="Dropdowns load automatically from the API.">
+        <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Field label="Exam">
+            <Select value={examValue} onChange={(e) => setExamValue(e.target.value)}>
+              <option value="">Select exam</option>
+              {exams.map((ex) => (
+                <option key={ex._id} value={ex.name}>{ex.name}</option>
               ))}
-            </select>
-          </div>
-          <div>
-            <label className={fieldClass}>Class</label>
-            <select {...register('class')} required className={selectClass}>
-              <option value="" disabled>
-                Select
-              </option>
-              {classOptions.map((o) => (
-                <option key={o} value={o}>
-                  Class {o}
-                </option>
+            </Select>
+          </Field>
+          <Field label="Class">
+            <Select value={classValue} onChange={(e) => handleClassChange(e.target.value)}>
+              <option value="">Select class</option>
+              {classes.map((c) => (
+                <option key={c} value={c}>Class {c}</option>
               ))}
-            </select>
-          </div>
-          <div>
-            <label className={fieldClass}>Section</label>
-            <select {...register('section')} required className={selectClass}>
-              <option value="" disabled>
-                Select
-              </option>
-              {sectionOptions.map((o) => (
-                <option key={o} value={o}>
-                  Sec {o}
-                </option>
+            </Select>
+          </Field>
+          <Field label="Section">
+            <Select
+              value={sectionValue}
+              onChange={(e) => setSectionValue(e.target.value)}
+              disabled={!classValue}
+            >
+              <option value="">Select section</option>
+              {sections.map((s) => (
+                <option key={s} value={s}>Section {s}</option>
               ))}
-            </select>
-          </div>
-          <div>
-            <label className={fieldClass}>Admission No</label>
+            </Select>
+          </Field>
+          <Field label="Admission No">
             <input
-              {...register('admissionNo')}
+              value={admissionNo}
+              onChange={(e) => setAdmissionNo(e.target.value)}
               placeholder="e.g. 2026-001"
-              required
               className="w-full rounded-2xl border border-white/60 bg-white/80 px-3 py-3 text-sm text-slate-800 placeholder-slate-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
             />
-          </div>
+          </Field>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-5 w-full rounded-2xl header-gradient py-3.5 font-display text-sm font-bold tracking-wide text-white shadow-lg shadow-emerald-700/20 transition hover:brightness-110 disabled:opacity-60"
-        >
-          {loading ? 'Fetching...' : 'Get Result'}
-        </button>
-      </form>
+        <div className="mt-4">
+          <PrimaryBtn onClick={handleGetResult} loading={loading} loadingText="Fetching...">
+            Get Result
+          </PrimaryBtn>
+        </div>
+      </Card>
 
-      {error && <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-600">{error}</p>}
+      {loadingOptions && <p className="text-sm text-slate-500">Loading filters...</p>}
+      <Message type="error" text={error} />
 
-      {result && (
+      {report && (
         <div className="glass rounded-3xl p-6">
-          {/* Header */}
-          <div className="text-center border-b pb-4 mb-6">
-            <h2 className="text-2xl font-bold tracking-wide">
-              ACADEMIC ACHIEVEMENT
-            </h2>
-
+          <div className="border-b pb-4 text-center">
+            <h2 className="text-2xl font-bold tracking-wide">ACADEMIC ACHIEVEMENT</h2>
             <h3 className="mt-2 text-lg font-semibold">
-              {result.student?.name}
+              {academics[0]?.student?.name || academics[0]?.student || 'Student'}
             </h3>
-
             <p className="text-sm text-gray-600">
-              {result.exam} | Class {result.class} | Section {result.section} |
-              Admission No. {result.admissionNo}
+              {examValue} | Class {classValue} | Section {sectionValue} | Admission No. {admissionNo}
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse border border-gray-700 text-center text-sm">
+          <div className="nice-scroll mt-6 overflow-x-auto rounded-xl bg-white/40">
+            <table className="w-full min-w-[520px] border-collapse text-sm">
               <thead>
-                <tr className="bg-gray-100">
-                  <th rowSpan={2} className="border p-2">
-                    Subject
-                  </th>
-                  <th colSpan={2} className="border p-2">
-                    Theory
-                  </th>
-                  <th colSpan={2} className="border p-2">
-                    Paper
-                  </th>
-                  <th rowSpan={2} className="border p-2">
-                    Total
-                  </th>
-                </tr>
-
-                <tr className="bg-gray-50">
-                  <th className="border p-2">Obt.</th>
-                  <th className="border p-2">Max</th>
-
-                  <th className="border p-2">Obt.</th>
-                  <th className="border p-2">Max</th>
+                <tr>
+                  {['Subject', 'Max Marks', 'Theory', 'Practical', 'Total', 'Grade'].map((h) => (
+                    <th key={h} className={thCls}>{h}</th>
+                  ))}
                 </tr>
               </thead>
-
               <tbody>
-                {result.subjects.map((sub) => {
-                  const total =
-                    (sub.theory?.obtained || 0) +
-                    (sub.paper?.obtained || 0);
-
-                  const max =
-                    (sub.theory?.max || 0) +
-                    (sub.paper?.max || 0);
-
-                  return (
-                    <tr key={sub.subject}>
-                      <td className="border p-2 text-left font-medium">
-                        {sub.subject}
-                      </td>
-
-                      <td className="border p-2">
-                        {sub.theory?.obtained}
-                      </td>
-
-                      <td className="border p-2">
-                        {sub.theory?.max}
-                      </td>
-
-                      <td className="border p-2">
-                        {sub.paper?.obtained}
-                      </td>
-
-                      <td className="border p-2">
-                        {sub.paper?.max}
-                      </td>
-
-                      <td className="border p-2 font-bold text-blue-700">
-                        {total} / {max}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {academics.map((item) => (
+                  <tr key={item._id} className="hover:bg-emerald-50/50">
+                    <td className={tdCls}>
+                      <span className="font-medium text-slate-800">{item.subject?.name || '-'}</span>
+                    </td>
+                    <td className={tdCls}>
+                      {(item.subject?.maxTheoryMarks || 0) + (item.subject?.maxPracticalMarks || 0)}
+                    </td>
+                    <td className={tdCls}>{item.theoryMarks}</td>
+                    <td className={tdCls}>{item.practicalMarks}</td>
+                    <td className={tdCls}>
+                      <span className="font-semibold text-slate-800">{item.totalMarks}</span>
+                    </td>
+                    <td className={tdCls}>{item.grade}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
 
-          {/* Footer */}
-          <div className="mt-8 grid grid-cols-3 text-center text-sm">
-            <div>
-              <div className="border-t border-black pt-2 inline-block w-32">
-                Class Teacher
-              </div>
+          {meta && (
+            <div className="mt-5 space-y-1 text-sm text-slate-700">
+              {meta.remarks && (
+                <p><span className="font-semibold">Remarks:</span> {meta.remarks}</p>
+              )}
+              <p>
+                <span className="font-semibold">Final Result:</span>{' '}
+                <span className="font-bold text-emerald-700">{meta.finalResult || 'Passed'}</span>
+              </p>
             </div>
-
-            <div>
-              <div className="border-t border-black pt-2 inline-block w-32">
-                Parent
-              </div>
-            </div>
-
-            <div>
-              <div className="border-t border-black pt-2 inline-block w-32">
-                Principal
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       )}
     </div>

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 import AppSidebar from './AppSidebar';
+import UserMenu from './UserMenu';
 
 function BellIcon() {
   return (
@@ -37,7 +38,6 @@ export default function StudentNav() {
   };
 
   const closeDrawer = () => setOpen(false);
-  const initial = (name || 'S').trim().charAt(0).toUpperCase() || 'S';
 
   return (
     <>
@@ -89,17 +89,11 @@ export default function StudentNav() {
           <div className="hidden text-sm font-semibold text-slate-500 md:block">Student Panel</div>
 
           <div className="ml-auto flex items-center gap-2.5">
-            <button onClick={handleLogout} className="relative rounded-full bg-white/70 p-2 shadow-sm">
+            <button aria-label="Notifications" title="Notifications" className="relative rounded-full bg-white/70 p-2 shadow-sm">
               <BellIcon />
               <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-500"></span>
             </button>
-            <button
-              title="Logout"
-              onClick={handleLogout}
-              className="flex h-9 w-9 items-center justify-center rounded-full header-gradient font-display text-sm font-bold text-white shadow-md"
-            >
-              {initial}
-            </button>
+            <UserMenu name={name} onLogout={handleLogout} />
           </div>
         </div>
       </header>

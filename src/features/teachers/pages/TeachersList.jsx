@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import TeacherListItem from '../components/TeacherListItem';
 import EmptyState from '../../../shared/components/EmptyState';
@@ -22,6 +22,11 @@ export default function TeachersList() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    handleGetTeachers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDeleteTeacher = async (teacherId) => {
     setError(null);
@@ -49,13 +54,15 @@ export default function TeachersList() {
           disabled={loading}
           className="rounded-2xl header-gradient px-5 py-3 font-display text-sm font-bold text-white shadow-lg shadow-emerald-700/20 transition hover:brightness-110 disabled:opacity-50"
         >
-          {loading ? 'Loading...' : 'Get All Teachers'}
+          {loading ? 'Loading...' : 'Refresh'}
         </button>
       </div>
 
-      {teachers.length === 0 ? (
+      {loading && teachers.length === 0 ? (
+        <p className="rounded-2xl bg-white/60 px-4 py-3 text-sm text-slate-500">Loading teachers...</p>
+      ) : teachers.length === 0 ? (
         <div className="glass rounded-3xl">
-          <EmptyState title="No teachers" message='Click "Get All Teachers" to load the list.' />
+          <EmptyState title="No teachers" message="No teachers available right now." />
         </div>
       ) : (
         <div>
