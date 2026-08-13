@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 import { fetchExams, fetchSubjects, fetchResults } from '../services/teacherPanelAPI';
 import { Field, Select, PrimaryBtn, Message, Card, SimpleTable, tdCls } from './TeacherUI';
 
@@ -51,7 +52,12 @@ export default function ResultTab() {
 
   return (
     <Card title="Result" subtitle="View entered marks for an exam / subject.">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+      >
         <Field label="Exam">
           <Select value={examValue} onChange={(e) => setExamValue(e.target.value)}>
             <option value="">Select exam</option>
@@ -73,7 +79,7 @@ export default function ResultTab() {
             Get Result
           </PrimaryBtn>
         </div>
-      </div>
+      </motion.div>
       {loadingFilters && <p className="mt-4 text-sm text-slate-500">Loading filters...</p>}
       <Message type="error" text={error} />
       <p className="mb-3 mt-2 text-sm font-medium text-slate-500">Total: {results.length}</p>

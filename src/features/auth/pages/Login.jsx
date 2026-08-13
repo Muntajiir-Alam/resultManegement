@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
+import { motion } from 'framer-motion';
 import { login, loginTeacher } from '../services/authThunks';
 import ErrorBanner from '../../../shared/components/ErrorBanner';
 
@@ -76,7 +77,12 @@ export default function Login() {
   return (
     <div className="">
       <div className="flex min-h-screen items-center justify-center px-5 py-10">
-        <div className="w-full max-w-sm">
+        <motion.div
+          initial={{ opacity: 0, y: 28, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full max-w-sm"
+        >
           <div className="mb-6 text-center">
             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl header-gradient text-white shadow-lg shadow-emerald-700/25">
               <SparkIcon />
@@ -185,7 +191,7 @@ export default function Login() {
           <p className="mt-6 text-center text-xs text-slate-400">
             Admin signs in with email & password. Teacher uses name & access code.
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

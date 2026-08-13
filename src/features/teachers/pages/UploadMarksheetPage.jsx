@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import UploadMarksheetForm from '../components/UploadMarksheetForm';
 import MarksTable from '../components/MarksTable';
 import {
@@ -155,7 +156,12 @@ export default function UploadMarksheetPage() {
 
   return (
     <div className="space-y-5">
-      <section className="header-gradient relative overflow-hidden rounded-3xl p-6 text-white shadow-lg shadow-emerald-900/20 sm:flex sm:items-center sm:justify-between sm:p-8">
+      <motion.section
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="header-gradient relative overflow-hidden rounded-3xl p-6 text-white shadow-lg shadow-emerald-900/20 sm:flex sm:items-center sm:justify-between sm:p-8"
+      >
         <div className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
         <div className="pointer-events-none absolute right-4 bottom-2 text-7xl opacity-20">❄️</div>
         <div>
@@ -173,7 +179,7 @@ export default function UploadMarksheetPage() {
         >
           Start Entry ➔
         </button>
-      </section>
+      </motion.section>
 
       <section className="flex items-center gap-2.5 rounded-3xl glass px-4 py-3">
         <SearchIcon />

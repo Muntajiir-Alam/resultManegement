@@ -1,18 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 import StudentsTab from '../../teachers/components/StudentsTab';
+import AnimatedNumber from '../../../shared/components/AnimatedNumber';
 import { fetchTeachersCount, fetchStudentsCount } from '../../teachers/services/teacherPanelAPI';
 
-function StatCard({ label, value, icon, gradient }) {
+function StatCard({ label, value, loading, icon, gradient }) {
   return (
-    <div className={`relative overflow-hidden rounded-3xl p-5 text-white shadow-lg ${gradient}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      whileHover={{ y: -6, scale: 1.02 }}
+      className={`relative overflow-hidden rounded-3xl p-5 text-white shadow-lg ${gradient}`}
+    >
       <div className="pointer-events-none absolute -right-4 -top-5 h-24 w-24 rounded-full bg-white/10 blur-xl"></div>
       <span className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white/20">
         {icon}
       </span>
       <p className="mt-4 text-sm font-semibold uppercase tracking-wide text-white/80">{label}</p>
-      <p className="mt-1 font-display text-4xl font-extrabold">{value}</p>
-    </div>
+      <p className="mt-1 font-display text-4xl font-extrabold">
+        {loading ? '…' : <AnimatedNumber value={value ?? 0} />}
+      </p>
+    </motion.div>
   );
 }
 
@@ -56,7 +66,11 @@ export default function HomePage() {
       <section className="header-gradient relative overflow-hidden rounded-3xl p-6 text-white shadow-lg shadow-emerald-900/20 sm:p-8">
         <div className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
         <div className="pointer-events-none absolute bottom-2 right-4 text-7xl opacity-20">📊</div>
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
           <p className="text-xs font-semibold uppercase tracking-widest text-emerald-200">
             {isAdmin ? 'Admin Home' : 'Teacher Home'}
           </p>
@@ -66,15 +80,21 @@ export default function HomePage() {
           <p className="mt-1 text-sm text-emerald-100/90">
             Here's the school at a glance — counts load automatically.
           </p>
-        </div>
+        </motion.div>
       </section>
 
       {error && <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-600">{error}</p>}
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <motion.section
+        initial="hidden"
+        animate="show"
+        variants={{ show: { transition: { staggerChildren: 0.15, delayChildren: 0.2 } } }}
+        className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
         <StatCard
-          label={loading ? 'Loading...' : 'Students'}
-          value={loading ? '…' : studentCount ?? 0}
+          loading={loading}
+          label="Students"
+          value={studentCount ?? 0}
           gradient="bg-gradient-to-br from-emerald-600 to-teal-700"
           icon={
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -86,8 +106,9 @@ export default function HomePage() {
         />
         {isAdmin && (
           <StatCard
-            label={loading ? 'Loading...' : 'Teachers'}
-            value={loading ? '…' : teacherCount ?? 0}
+            loading={loading}
+            label="Teachers"
+            value={teacherCount ?? 0}
             gradient="bg-gradient-to-br from-teal-600 to-cyan-700"
             icon={
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -98,7 +119,7 @@ export default function HomePage() {
             }
           />
         )}
-      </section>
+      </motion.section>
 
       <StudentsTab />
     </div>
