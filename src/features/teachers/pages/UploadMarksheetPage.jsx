@@ -32,6 +32,8 @@ export default function UploadMarksheetPage() {
   const [filters, setFilters] = useState(null);
   const [currentSubject, setCurrentSubject] = useState(null);
   const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 15;
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -78,6 +80,7 @@ export default function UploadMarksheetPage() {
     setError(null);
     setMessage(null);
     setQuery('');
+    setPage(1);
     try {
       const subjectObj = subjects.find((s) => s._id === values.subject) || null;
       const list = await fetchStudents(token, { class: values.class, section: values.section });
@@ -142,6 +145,9 @@ export default function UploadMarksheetPage() {
   const shown = q
     ? students.filter((s) => s.name.toLowerCase().includes(q) || s.admissionNo.toLowerCase().includes(q))
     : students;
+  const totalPages = Math.max(1, Math.ceil(shown.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pageStudents = shown.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const scrollToFilters = () => {
     document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -153,7 +159,7 @@ export default function UploadMarksheetPage() {
         <div className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
         <div className="pointer-events-none absolute right-4 bottom-2 text-7xl opacity-20">❄️</div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Upload Marksheet</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Marks Entry</p>
           <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">
             Marks in, <span className="text-emerald-300">stress out.</span>
           </h1>
@@ -173,7 +179,10 @@ export default function UploadMarksheetPage() {
         <SearchIcon />
         <input
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setPage(1);
+          }}
           placeholder="Search students or admission no..."
           className="w-full bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none"
         />
@@ -211,7 +220,46 @@ export default function UploadMarksheetPage() {
               {' · '}Exam: <span className="font-semibold text-slate-800">{filters?.exam}</span>
             </p>
           )}
-          <MarksTable students={shown} onChange={handleChange} />
+          <MarksTable students={pageStudents} totalCount={shown.length} onChange={handleChange} />
+
+          {totalPages > 1 && (
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl glass px-4 py-3">
+              <p className="text-xs font-medium text-slate-500">
+                Showing {shown.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1}–
+                {Math.min(safePage * PAGE_SIZE, shown.length)} of {shown.length}
+              </p>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage <= 1}
+                  className="rounded-xl bg-white/80 px-3.5 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-white disabled:opacity-40"
+                >
+                  Prev
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => setPage(p)}
+                    className={`h-9 min-w-9 rounded-xl px-2 text-sm font-semibold transition ${
+                      p === safePage
+                        ? 'header-gradient text-white shadow-md'
+                        : 'bg-white/80 text-slate-600 shadow-sm hover:bg-white'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage >= totalPages}
+                  className="rounded-xl bg-white/80 px-3.5 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:bg-white disabled:opacity-40"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+
           {shown.length > 0 && (
             <button
               onClick={handleSubmit}

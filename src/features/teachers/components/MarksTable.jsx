@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import CustomKeypad from '../../../shared/components/CustomKeypad';
 import useIsTouchDevice from '../../../shared/hooks/useIsTouchDevice';
 
-export default function EditableMarksTable({ students, onChange }) {
+export default function EditableMarksTable({ students, onChange, totalCount }) {
   const isTouch = useIsTouchDevice();
   const [activeIndex, setActiveIndex] = useState(null);
   const [editingValue, setEditingValue] = useState('');
@@ -142,7 +142,7 @@ export default function EditableMarksTable({ students, onChange }) {
       <div className="mb-3 flex items-center justify-between px-1">
         <h3 className="font-display text-base font-bold text-slate-800">Students List</h3>
         <span className="rounded-full header-gradient px-3 py-1 text-xs font-semibold text-white">
-          {students.length} student{students.length !== 1 ? 's' : ''}
+          {(totalCount ?? students.length)} student{(totalCount ?? students.length) !== 1 ? 's' : ''}
         </span>
       </div>
 

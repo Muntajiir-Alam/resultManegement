@@ -14,7 +14,6 @@ import HomePage from './features/home/pages/HomePage';
 import StudentsTab from './features/teachers/components/StudentsTab';
 import ResultTab from './features/teachers/components/ResultTab';
 import UploadMarksheetPage from './features/teachers/pages/UploadMarksheetPage';
-import RemoveMarksheetTab from './features/teachers/components/RemoveMarksheetTab';
 import ReportCardTab from './features/teachers/components/ReportCardTab';
 
 const isTeacherRole = (role) => role === 'teacher' || role === 'classteacher';
@@ -77,7 +76,6 @@ export default function App() {
         <Route path="students" element={<StudentsTab />} />
         <Route path="result" element={<ResultTab />} />
         <Route path="upload" element={<UploadMarksheetPage />} />
-        <Route path="remove" element={<RemoveMarksheetTab />} />
         <Route path="report-card" element={<ReportCardTab />} />
       </Route>
       <Route

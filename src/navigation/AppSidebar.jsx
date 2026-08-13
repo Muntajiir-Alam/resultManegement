@@ -72,14 +72,6 @@ function IconUpload() {
   );
 }
 
-function IconTrash() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13M10 11v5M14 11v5" />
-    </svg>
-  );
-}
-
 function IconDoc() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -96,8 +88,7 @@ const iconMap = {
   'Teachers': <IconUsers />,
   'Access': <IconKey />,
   'Students': <IconUsers />,
-  'Upload Marksheet': <IconUpload />,
-  'Remove Marksheet': <IconTrash />,
+  'Marks Entry': <IconUpload />,
   'Report Card': <IconDoc />
 };
 
