@@ -30,6 +30,14 @@ const roles = [
   { key: 'teacher', label: 'Teacher', icon: '👩🏫' }
 ];
 
+const isTeacherRole = (role) => role === 'teacher' || role === 'classteacher';
+
+const homeFor = (role) => {
+  if (role === 'admin') return '/admin';
+  if (isTeacherRole(role)) return '/teacher';
+  return '/student';
+};
+
 export default function Login() {
   const dispatch = useDispatch();
   const { error, status, isAuthenticated, user } = useSelector((state) => state.auth);
@@ -58,7 +66,7 @@ export default function Login() {
   };
 
   if (isAuthenticated) {
-    return <Navigate to={user?.role === 'admin' ? '/admin' : '/student'} replace />;
+    return <Navigate to={homeFor(user?.role)} replace />;
   }
 
   const fieldCls =

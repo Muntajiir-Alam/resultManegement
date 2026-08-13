@@ -1,7 +1,15 @@
-import { useState } from 'react';
-import ResultEntryForm from '../components/ResultEntryForm';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import UploadMarksheetForm from '../components/UploadMarksheetForm';
 import MarksTable from '../components/MarksTable';
-import { fetchStudents, submitMarks } from '../services/entryApi';
+import {
+  fetchClasses,
+  fetchSections,
+  fetchExams,
+  fetchSubjects,
+  fetchStudents,
+  submitMarks
+} from '../services/teacherPanelAPI';
 
 function SearchIcon() {
   return (
@@ -12,15 +20,58 @@ function SearchIcon() {
   );
 }
 
-export default function ResultEntryPage() {
+export default function UploadMarksheetPage() {
+  const token = useSelector((state) => state.auth.token);
+
+  const [exams, setExams] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [sections, setSections] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+
   const [students, setStudents] = useState([]);
   const [filters, setFilters] = useState(null);
+  const [currentSubject, setCurrentSubject] = useState(null);
   const [query, setQuery] = useState('');
+  const [loadingOptions, setLoadingOptions] = useState(true);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [fetched, setFetched] = useState(false);
+
+  const loadOptions = async () => {
+    setLoadingOptions(true);
+    setError(null);
+    try {
+      const [e, c, s] = await Promise.all([
+        fetchExams(token),
+        fetchClasses(token),
+        fetchSubjects(token)
+      ]);
+      setExams(e);
+      setClasses(c);
+      setSubjects(s);
+    } catch (err) {
+      setError(err?.response?.data?.message || 'Could not load filters.');
+    } finally {
+      setLoadingOptions(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleClassChange = async (className) => {
+    setSections([]);
+    if (!className) return;
+    try {
+      setSections(await fetchSections(token, className));
+    } catch (e) {
+      setError(e?.response?.data?.message || 'Could not load sections.');
+    }
+  };
 
   const handleFetch = async (values) => {
     setLoading(true);
@@ -28,9 +79,22 @@ export default function ResultEntryPage() {
     setMessage(null);
     setQuery('');
     try {
-      const data = await fetchStudents(values);
-      setStudents(data);
-      setFilters(values);
+      const subjectObj = subjects.find((s) => s._id === values.subject) || null;
+      const list = await fetchStudents(token, { class: values.class, section: values.section });
+      setCurrentSubject(subjectObj);
+      setStudents(
+        list.map((st) => ({
+          _id: st._id,
+          admissionNo: st.admissionNumber,
+          name: st.name,
+          section: st.section,
+          class: st.class,
+          subject: subjectObj?.name || '',
+          theory: { max: subjectObj?.maxTheoryMarks || 100, obtained: 0 },
+          paper: { max: subjectObj?.maxPracticalMarks || 30, obtained: 0 }
+        }))
+      );
+      setFilters({ exam: values.exam, subjectId: values.subject });
       setFetched(true);
     } catch (e) {
       setError(e?.response?.data?.message || 'Could not load students. Please try again.');
@@ -42,27 +106,30 @@ export default function ResultEntryPage() {
 
   const handleChange = (admissionNo, field, value) => {
     setStudents((prev) =>
-      prev.map((s) => (s.admissionNo === admissionNo ? { ...s, [field]: { ...s[field], obtained: value } } : s))
+      prev.map((s) =>
+        s.admissionNo === admissionNo
+          ? { ...s, [field]: { ...s[field], obtained: value } }
+          : s
+      )
     );
   };
 
   const handleSubmit = async () => {
-    if (!students.length) return;
+    if (!students.length || !filters) return;
     setSubmitting(true);
     setError(null);
     setMessage(null);
     try {
-      const res = await submitMarks({
+      const payload = {
         exam: filters.exam,
-        class: filters.class,
-        section: filters.section,
-        subject: filters.subject,
+        subjectId: filters.subjectId,
         marks: students.map((s) => ({
-          admissionNo: s.admissionNo,
-          theory: s.theory.obtained,
-          paper: s.paper.obtained
+          studentId: s._id,
+          theoryMarks: s.theory.obtained,
+          practicalMarks: s.paper.obtained
         }))
-      });
+      };
+      const res = await submitMarks(token, payload);
       setMessage(res?.message || 'Marks saved successfully.');
     } catch (e) {
       setError(e?.response?.data?.message || 'Unable to save marks. Please try again.');
@@ -72,7 +139,9 @@ export default function ResultEntryPage() {
   };
 
   const q = query.trim().toLowerCase();
-  const shown = q ? students.filter((s) => s.name.toLowerCase().includes(q) || s.admissionNo.toLowerCase().includes(q)) : students;
+  const shown = q
+    ? students.filter((s) => s.name.toLowerCase().includes(q) || s.admissionNo.toLowerCase().includes(q))
+    : students;
 
   const scrollToFilters = () => {
     document.getElementById('filter-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -80,12 +149,11 @@ export default function ResultEntryPage() {
 
   return (
     <div className="space-y-5">
-      {/* Hero banner */}
       <section className="header-gradient relative overflow-hidden rounded-3xl p-6 text-white shadow-lg shadow-emerald-900/20 sm:flex sm:items-center sm:justify-between sm:p-8">
         <div className="pointer-events-none absolute -right-6 -top-8 h-40 w-40 rounded-full bg-white/10 blur-2xl"></div>
         <div className="pointer-events-none absolute right-4 bottom-2 text-7xl opacity-20">❄️</div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Result Entry</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-200">Upload Marksheet</p>
           <h1 className="mt-1 font-display text-2xl font-extrabold leading-tight sm:text-3xl">
             Marks in, <span className="text-emerald-300">stress out.</span>
           </h1>
@@ -101,7 +169,6 @@ export default function ResultEntryPage() {
         </button>
       </section>
 
-      {/* Search */}
       <section className="flex items-center gap-2.5 rounded-3xl glass px-4 py-3">
         <SearchIcon />
         <input
@@ -112,7 +179,6 @@ export default function ResultEntryPage() {
         />
       </section>
 
-      {/* Status messages */}
       {error && <p className="rounded-2xl bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-600">{error}</p>}
       {message && (
         <div className="flex items-center gap-3 rounded-2xl bg-emerald-500/10 px-4 py-3">
@@ -125,14 +191,26 @@ export default function ResultEntryPage() {
         </div>
       )}
 
-      {/* Filter form */}
       <section id="filter-section" className="scroll-mt-24">
-        <ResultEntryForm onSubmit={handleFetch} loading={loading} />
+        <UploadMarksheetForm
+          exams={exams}
+          classes={classes}
+          sections={sections}
+          subjects={subjects}
+          onClassChange={handleClassChange}
+          onSubmit={handleFetch}
+          loading={loading}
+        />
       </section>
 
-      {/* Table */}
       {(fetched || students.length > 0) && (
         <section className="space-y-3">
+          {currentSubject && (
+            <p className="text-sm font-medium text-slate-500">
+              Subject: <span className="font-semibold text-slate-800">{currentSubject.name}</span>
+              {' · '}Exam: <span className="font-semibold text-slate-800">{filters?.exam}</span>
+            </p>
+          )}
           <MarksTable students={shown} onChange={handleChange} />
           {shown.length > 0 && (
             <button

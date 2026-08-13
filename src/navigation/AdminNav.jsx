@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { logout } from '../features/auth/authSlice';
 
 const tabs = [
-  { name: 'Result Entry', to: '/admin/result-entry' },
   { name: 'View Result', to: '/admin/view-result' },
   { name: 'Merit', to: '/admin/merit' }
 ];
