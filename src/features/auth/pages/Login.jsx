@@ -45,10 +45,10 @@ export default function Login() {
   const { register, handleSubmit, watch, control } = useForm({
     defaultValues: {
       role: 'admin',
-      email: 'admin@school.com',
-      password: 'admin123',
-      name: 'John',
-      accessCode: 'TCH001'
+      email: '',
+      password: '',
+      name: '',
+      accessCode: ''
     }
   });
 

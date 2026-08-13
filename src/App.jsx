@@ -11,7 +11,6 @@ import ViewResultPage from './features/resultEntry/pages/ViewResultPage';
 import TeachersList from './features/teachers/pages/TeachersList';
 import TeacherAccessPage from './features/teachers/pages/TeacherAccessPage';
 import HomePage from './features/home/pages/HomePage';
-import StudentsTab from './features/teachers/components/StudentsTab';
 import ResultTab from './features/teachers/components/ResultTab';
 import UploadMarksheetPage from './features/teachers/pages/UploadMarksheetPage';
 import ReportCardTab from './features/teachers/components/ReportCardTab';
@@ -73,7 +72,6 @@ export default function App() {
         }
       >
         <Route index element={<HomePage />} />
-        <Route path="students" element={<StudentsTab />} />
         <Route path="result" element={<ResultTab />} />
         <Route path="upload" element={<UploadMarksheetPage />} />
         <Route path="report-card" element={<ReportCardTab />} />

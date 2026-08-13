@@ -23,7 +23,6 @@ function MenuIcon() {
 
 const navItems = [
   { to: '/teacher', label: 'Home', end: true },
-  { to: '/teacher/students', label: 'Students', end: false },
   { to: '/teacher/result', label: 'Result', end: false },
   { to: '/teacher/upload', label: 'Marks Entry', end: false },
   { to: '/teacher/report-card', label: 'Report Card', end: false }

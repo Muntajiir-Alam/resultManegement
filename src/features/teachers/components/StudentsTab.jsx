@@ -110,6 +110,29 @@ export default function StudentsTab() {
             <td className={tdCls}>{student.section}</td>
           </tr>
         )}
+        renderMobile={(student, i) => (
+          <div key={student._id} className="rounded-2xl border border-emerald-100/80 bg-white/60 p-3 shadow-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-xs font-bold text-emerald-700">
+                {i + 1}
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-800">{student.name}</p>
+                <p className="truncate text-xs text-slate-500">
+                  {student.admissionNumber} · Roll {student.rollNumber}
+                </p>
+              </div>
+            </div>
+            <div className="mt-2.5 flex flex-wrap gap-1.5">
+              <span className="rounded-lg bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700">
+                Class {student.class}
+              </span>
+              <span className="rounded-lg bg-teal-50 px-2 py-1 text-[11px] font-semibold text-teal-700">
+                Section {student.section}
+              </span>
+            </div>
+          </div>
+        )}
       />
     </Card>
   );
