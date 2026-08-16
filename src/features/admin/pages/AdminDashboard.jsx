@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import StatsCard from '../components/StatsCard';
-import TeacherAccessForm from '../../teachers/components/TeacherAccessForm';
-import TeacherListItem from '../../teachers/components/TeacherListItem';
+import TeacherAccessForm from '../../teacherManagement/components/TeacherAccessForm';
+import TeacherListItem from '../../teacherManagement/components/TeacherListItem';
 import EmptyState from '../../../shared/components/EmptyState';
-import { createTeacher, fetchTeachers, deleteTeacher } from '../../teachers/services/teacherAPI';
+import { createTeacher, fetchTeachers, deleteTeacher } from '../../teacherManagement/services/teacherAPI';
 
 export default function AdminDashboard() {
   const token = useSelector((state) => state.auth.token);

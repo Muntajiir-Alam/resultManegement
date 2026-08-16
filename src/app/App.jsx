@@ -1,19 +1,19 @@
 import { useSelector } from 'react-redux';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './features/auth/pages/Login';
-import ProtectRoute from './features/auth/components/ProtectRoute';
-import AdminLayout from './navigation/AdminLayout';
-import StudentNav from './navigation/StudentNav';
-import TeacherLayout from './navigation/TeacherLayout';
-import MeritList from './features/merit/pages/MeritList';
-import ViewResult from './features/resultView/pages/ViewResult';
-import ViewResultPage from './features/resultEntry/pages/ViewResultPage';
-import TeachersList from './features/teachers/pages/TeachersList';
-import TeacherAccessPage from './features/teachers/pages/TeacherAccessPage';
-import HomePage from './features/home/pages/HomePage';
-import ResultTab from './features/teachers/components/ResultTab';
-import UploadMarksheetPage from './features/teachers/pages/UploadMarksheetPage';
-import ReportCardTab from './features/teachers/components/ReportCardTab';
+import Login from '../features/auth/pages/Login';
+import ProtectRoute from '../features/auth/components/ProtectRoute';
+import AdminLayout from '../routes/admin/AdminLayout';
+import StudentNav from '../routes/student/StudentNav';
+import TeacherLayout from '../routes/teacher/TeacherLayout';
+import MeritList from '../features/merit/pages/MeritList';
+import ViewResult from '../features/result/pages/ViewResult';
+import ViewResultPage from '../features/result/pages/ViewResultPage';
+import TeachersList from '../features/teacherManagement/pages/TeachersList';
+import TeacherAccessPage from '../features/teacherManagement/pages/TeacherAccessPage';
+import HomePage from '../features/home/pages/HomePage';
+import ResultTab from '../features/teacherPanel/components/ResultTab';
+import UploadMarksheetPage from '../features/marksheetUpload/pages/UploadMarksheetPage';
+import ReportCardTab from '../features/reportCard/pages/ReportCardTab';
 
 const isTeacherRole = (role) => role === 'teacher' || role === 'classteacher';
 

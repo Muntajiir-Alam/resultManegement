@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import UploadMarksheetForm from '../components/UploadMarksheetForm';
-import MarksTable from '../components/MarksTable';
+import MarksTable from '../../teacherPanel/components/MarksTable';
 import {
   fetchClasses,
   fetchSections,
@@ -10,7 +10,7 @@ import {
   fetchSubjects,
   fetchStudents,
   submitMarks
-} from '../services/teacherPanelAPI';
+} from '../../teacherPanel/services/teacherPanelAPI';
 
 function SearchIcon() {
   return (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field, Select, PrimaryBtn } from './TeacherUI';
+import { Field, Select, PrimaryBtn } from '../../teacherPanel/components/TeacherUI';
 
 export default function UploadMarksheetForm({ exams, classes, sections, subjects, onClassChange, onSubmit, loading }) {
   const [exam, setExam] = useState('');

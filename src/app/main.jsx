@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import store from './store';
-import useLenis from './shared/hooks/useLenis';
+import useLenis from '../shared/hooks/useLenis';
 import './index.css';
 
 function LenisProvider({ children }) {

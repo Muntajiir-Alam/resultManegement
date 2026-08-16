@@ -7,8 +7,8 @@ import {
   fetchStudents,
   fetchReportCard,
   downloadReportCard
-} from '../services/teacherPanelAPI';
-import { Field, Select, PrimaryBtn, Message, Card, thCls, tdCls } from './TeacherUI';
+} from '../../teacherPanel/services/teacherPanelAPI';
+import { Field, Select, PrimaryBtn, Message, Card, thCls, tdCls } from '../../teacherPanel/components/TeacherUI';
 
 export default function ReportCardTab() {
   const token = useSelector((state) => state.auth.token);

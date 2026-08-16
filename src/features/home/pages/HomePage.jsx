@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import StudentsTab from '../../teachers/components/StudentsTab';
+import StudentsTab from '../../teacherPanel/components/StudentsTab';
 import AnimatedNumber from '../../../shared/components/AnimatedNumber';
-import { fetchTeachersCount, fetchStudentsCount } from '../../teachers/services/teacherPanelAPI';
+import { fetchTeachersCount, fetchStudentsCount } from '../../teacherPanel/services/teacherPanelAPI';
 
 function StatCard({ label, value, loading, icon, gradient }) {
   return (

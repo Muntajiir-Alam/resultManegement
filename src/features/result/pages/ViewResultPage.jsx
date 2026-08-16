@@ -6,8 +6,8 @@ import {
   fetchSections,
   fetchStudents,
   fetchReportCard
-} from '../../teachers/services/teacherPanelAPI';
-import { Field, Select, PrimaryBtn, Message, Card, thCls, tdCls } from '../../teachers/components/TeacherUI';
+} from '../../teacherPanel/services/teacherPanelAPI';
+import { Field, Select, PrimaryBtn, Message, Card, thCls, tdCls } from '../../teacherPanel/components/TeacherUI';
 
 export default function ViewResultPage() {
   const token = useSelector((state) => state.auth.token);

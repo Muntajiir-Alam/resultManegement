@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { logout } from '../features/auth/authSlice';
-import AppSidebar from './AppSidebar';
-import UserMenu from './UserMenu';
+import { logout } from '../../features/auth/authSlice';
+import AppSidebar from '../AppSidebar';
+import UserMenu from '../UserMenu';
 
 function BellIcon() {
   return (
@@ -22,13 +22,14 @@ function MenuIcon() {
 }
 
 const navItems = [
-  { to: '/teacher', label: 'Home', end: true },
-  { to: '/teacher/result', label: 'Result', end: false },
-  { to: '/teacher/upload', label: 'Marks Entry', end: false },
-  { to: '/teacher/report-card', label: 'Report Card', end: false }
+  { to: '/admin', label: 'Home', end: true },
+  { to: '/admin/teachers', label: 'Teachers', end: false },
+  { to: '/admin/teacher-access', label: 'Access', end: false },
+  { to: '/admin/view-result', label: 'Result', end: false },
+  { to: '/admin/merit', label: 'Merit', end: false }
 ];
 
-export default function TeacherLayout() {
+export default function AdminLayout() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const name = useSelector((state) => state.auth.user?.name);
@@ -46,9 +47,9 @@ export default function TeacherLayout() {
       {/* Desktop left sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 overflow-hidden rounded-r-3xl md:block">
         <AppSidebar
-          title="Teacher Portal"
-          subtitle="Marks & Results"
-          role="Teacher"
+          title="Result Portal"
+          subtitle="Admin • Science Wing"
+          role="Admin"
           items={navItems}
           name={name}
           onLogout={handleLogout}
@@ -67,9 +68,9 @@ export default function TeacherLayout() {
         }`}
       >
         <AppSidebar
-          title="Teacher Portal"
-          subtitle="Marks & Results"
-          role="Teacher"
+          title="Result Portal"
+          subtitle="Admin • Science Wing"
+          role="Admin"
           items={navItems}
           name={name}
           onLogout={handleLogout}
@@ -89,7 +90,7 @@ export default function TeacherLayout() {
               <MenuIcon />
             </button>
 
-            <div className="hidden text-sm font-semibold text-slate-500 md:block">Teacher Panel</div>
+            <div className="hidden text-sm font-semibold text-slate-500 md:block">Admin Panel</div>
 
             <div className="ml-auto flex items-center gap-2.5">
               <button aria-label="Notifications" title="Notifications" className="relative rounded-full bg-white/70 p-2 shadow-sm">
